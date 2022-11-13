@@ -1,14 +1,13 @@
-﻿using Soccer.DAL.Models;
-using static Soccer.COMMON.Models.PlayerInnerModels;
+﻿using static Soccer.COMMON.Models.PlayerInnerModels;
 
-namespace Soccer.BLL.DTOs
+namespace Soccer.COMMON.ViewModels
 {
-    public class PlayerDTO
+    public class PlayerVM
     {
-        public int Id { get; set; }
-        
+        public string Id { get; set; } = null!;
+
         public string Name { get; set; } = null!;
-        
+
         public string Firstname { get; set; } = null!;
 
         public string Lastname { get; set; } = null!;
@@ -27,6 +26,6 @@ namespace Soccer.BLL.DTOs
 
         public string Photo { get; set; } = null!;
 
-        public List<StatisticDTO> Statistics { get; set; } = new();
+        public List<StatisticVM> Statistics { get; set; } = new();
     }
 }

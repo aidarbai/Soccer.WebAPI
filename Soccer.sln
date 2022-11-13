@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DAL", "Soccer.DAL\So
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.BLL", "Soccer.BLL\Soccer.BLL.csproj", "{F397BC6A-DB34-466F-B898-F90B15F01880}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.COMMON", "Soccer.COMMON\Soccer.COMMON.csproj", "{2AAC36F4-1C55-46CB-BFEA-DC548879C914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.COMMON", "Soccer.COMMON\Soccer.COMMON.csproj", "{2AAC36F4-1C55-46CB-BFEA-DC548879C914}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9C34575-A9E1-4293-BC94-170D7F5FA60F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

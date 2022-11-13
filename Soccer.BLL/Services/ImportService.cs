@@ -80,7 +80,6 @@ namespace Soccer.BLL.Services
 
         public async Task ImportAllPlayersByTeamsListAsync()
         {
-
             var teamIds = await _teamService.GetTeamIdsAsync();
 
             //var teamIds = new string[] { "529", "530" };
@@ -122,7 +121,7 @@ namespace Soccer.BLL.Services
 
                 var playersIds = players?.Select(p => p.Id);
 
-                var existingPlayers = await _playerService.SearchByListOfIdsAsync(playersIds!);
+                var existingPlayers = await _playerService.GetPlayersByListOfIdsAsync(playersIds!);
 
                 _logger.LogInformation("{count} existing players found for team {teamId}", existingPlayers.Count(), teamId);
 
@@ -143,15 +142,17 @@ namespace Soccer.BLL.Services
                         }
                     }
                     
-                    players = players!.ExceptBy(existingPlayers.Select(e => e.Id), p => p.Id); // TODO check for potential null ref exception after changing to IEnum
+                    players = players!.ExceptBy(existingPlayers.Select(e => e.Id), p => p.Id);
                 }
 
-                if (players!.Any()) // ???
+#pragma warning disable CS8604 // Possible null reference argument.
+                if (players.Any())
                 {
                     _logger.LogInformation("{count} players of team {teamId} sent to db", players!.Count(), teamId);
 
                     await _playerService.CreateManyAsync(players!);
                 }
+#pragma warning restore CS8604 // Possible null reference argument.
             }
         }
         //public async Task ImportPlayerByIdAsync(string playerId)

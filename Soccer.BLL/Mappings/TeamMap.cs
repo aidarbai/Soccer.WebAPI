@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Soccer.BLL.DTOs;
+using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Models;
 
 namespace Soccer.BLL.Mappings
@@ -16,8 +17,7 @@ namespace Soccer.BLL.Mappings
             .ForMember(dest => dest.Venue, prop => prop.MapFrom(src => src.Venue.Name))
             .ForMember(dest => dest.City, prop => prop.MapFrom(src => src.Venue.City));
 
-            CreateMap<TeamDTO, Team>()
-           .ForMember(dest => dest.Id, prop => prop.MapFrom(src => src.Id.ToString()));
+            CreateMap<TeamVm, Team>().ReverseMap();
         }
     }
 }

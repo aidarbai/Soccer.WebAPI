@@ -1,11 +1,13 @@
-﻿using Soccer.DAL.Attributes;
-using static Soccer.COMMON.Models.PlayerInnerModels;
+﻿using static Soccer.COMMON.Models.PlayerInnerModels;
 
-namespace Soccer.DAL.Models
+namespace Soccer.BLL.DTOs
 {
-    [BsonCollection("players")]
-    public class Player : Document
+    public class PlayerImportDTO
     {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = null!;
+        
         public string Firstname { get; set; } = null!;
 
         public string Lastname { get; set; } = null!;
@@ -23,7 +25,6 @@ namespace Soccer.DAL.Models
         public bool Injured { get; set; }
 
         public string Photo { get; set; } = null!;
-
-        public List<Statistic> Statistics { get; set; } = new();
+        
     }
 }

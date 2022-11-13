@@ -1,11 +1,11 @@
 ﻿using static Soccer.COMMON.Models.PlayerInnerModels;
 
-namespace Soccer.BLL.DTOs
+namespace Soccer.COMMON.ViewModels
 {
-    public class StatisticDTO
+    public class StatisticVM
     {
-        public TeamDTO Team { get; set; } = null!;
-        public LeagueDTO League { get; set; } = null!;
+        public string Team { get; set; } = null!;
+        public string League { get; set; } = null!;
         public Games Games { get; set; } = null!;
         public Substitutes Substitutes { get; set; } = null!;
         public Shots Shots { get; set; } = null!;

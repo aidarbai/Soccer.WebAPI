@@ -27,7 +27,12 @@ namespace Soccer.BLL.Services
             var teams = await _repository.GetAllAsync();
             return teams.Select(t => t.Id);
         }
-        public async Task<PaginatedResponse<Team>> GetTeamsPaginateAsync(SortAndPageTeamModel model) => await _repository.GetTeamsPaginatedAsync(model);
+        public async Task<PaginatedResponse<TeamVm>> GetTeamsPaginateAsync(SortAndPageTeamModel model)
+        {
+            var teams = await _repository.GetTeamsPaginatedAsync(model);
+
+            return teams;
+        }
 
         public async Task<Team> GetByIdAsync(string id) => await _repository.GetByIdAsync(id);
 
@@ -35,11 +40,11 @@ namespace Soccer.BLL.Services
 
         public async Task CreateManyAsync(IEnumerable<Team> newTeams) => await _repository.CreateManyAsync(newTeams);
 
-        public async Task UpdateAsync(Team updatedTeam) => await _repository.UpdateAsync( updatedTeam);
+        public async Task UpdateAsync(Team updatedTeam) => await _repository.UpdateAsync(updatedTeam);
 
         public async Task RemoveAsync(string id) => await _repository.RemoveAsync(id);
 
         public async Task<IEnumerable<Team>> SearchByNameAsync(string search) => await _repository.SearchByNameAsync(search);
-        
+
     }
 }

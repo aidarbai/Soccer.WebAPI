@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Soccer.BLL.DTOs;
+using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Models;
 
 namespace Soccer.BLL.Mappings
@@ -8,8 +9,7 @@ namespace Soccer.BLL.Mappings
     {
         public PlayerMap()
         {
-            CreateMap<PlayerDTO, Player>()
-             .ForMember(dest => dest.Id, prop => prop.MapFrom(src => src.Id.ToString()));
+            CreateMap<PlayerVM, Player>().ReverseMap();
 
             CreateMap<ResponsePlayerImportDTO, Player>()
             .ForMember(dest => dest.Id, prop => prop.MapFrom(src => src.Player.Id.ToString()))

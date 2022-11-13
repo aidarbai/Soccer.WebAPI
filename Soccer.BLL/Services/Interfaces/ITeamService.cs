@@ -10,7 +10,7 @@ namespace Soccer.BLL.Services.Interfaces
 
         Task<IEnumerable<string>> GetTeamIdsAsync();
 
-        Task<PaginatedResponse<Team>> GetTeamsPaginateAsync(SortAndPageTeamModel model);
+        Task<PaginatedResponse<TeamVm>> GetTeamsPaginateAsync(SortAndPageTeamModel model);
 
         Task<Team> GetByIdAsync(string id);
 

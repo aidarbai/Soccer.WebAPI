@@ -4,7 +4,6 @@ using Soccer.BLL.DTOs;
 using Soccer.BLL.Services.Interfaces;
 using Soccer.DAL.Models;
 using Soccer.DAL.Repositories.Interfaces;
-using System;
 
 namespace Soccer.BLL.Services
 {
@@ -34,7 +33,7 @@ namespace Soccer.BLL.Services
 
         public async Task RemoveAsync(string id) => await _repository.RemoveAsync(id);
 
-        public async Task<Dictionary<string, string>> GenerateLeaguesDictionaryAsync(IEnumerable<LeagueDTO> leagues)
+        public async Task<Dictionary<string, string>> GenerateLeaguesDictionaryAsync(IEnumerable<LeagueImportDTO> leagues)
         {
             var leaguesDictionary = leagues.ToDictionary(keySelector: l => l.Name, elementSelector: l => l.Id.ToString());
 
@@ -55,7 +54,7 @@ namespace Soccer.BLL.Services
             return leaguesDictionary;
         }
 
-        private async Task<Dictionary<string, string>> CreateMissingLeagues(IEnumerable<LeagueDTO> leagues, IEnumerable<League> leaguesFromDb, Dictionary<string, string> leaguesDictionary)
+        private async Task<Dictionary<string, string>> CreateMissingLeagues(IEnumerable<LeagueImportDTO> leagues, IEnumerable<League> leaguesFromDb, Dictionary<string, string> leaguesDictionary)
         {
             var missingLeagueDTOs = leagues.ExceptBy(leaguesFromDb.Select(l => l.Name), x => x.Name);
 

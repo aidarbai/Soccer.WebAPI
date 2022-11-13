@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using Soccer.BLL.DTOs;
 using Soccer.BLL.Services.Interfaces;
@@ -28,11 +29,27 @@ namespace Soccer.BLL.Services
         }
 
         public async Task<IEnumerable<Player>> GetAllAsync() => await _repository.GetAllAsync();
-        public async Task<PaginatedResponse<Player>> GetTeamsPaginateAsync(SortAndPagePlayerModel model) => await _repository.GetTeamsPaginatedAsync(model);
+        public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginatedAsync(SortAndPagePlayerModel model)
+        {
+            var count = await _repository.GetPlayersCountAsync();
+
+            var players = await _repository.GetPlayersForPaginatedResponseAsync(model, null!);
+
+            var result = new PaginatedResponse<PlayerVM>
+            {
+                ItemsCount = count,
+                PageSize = model.PageSize,
+                TotalPages = (int)Math.Ceiling(decimal.Divide(count, model.PageSize)),
+                PageNumber = model.PageNumber,
+                Results = _mapper.Map<List<PlayerVM>>(players)
+            };
+
+            return result;
+        }
 
         public async Task<Player> GetByIdAsync(string id) => await _repository.GetByIdAsync(id);
 
-        public async Task<IEnumerable<Player>> GetByTeamIdAsync(string id) => await _repository.GetByTeamIdAsync(id);
+        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string id) => await _repository.GetPlayersByTeamIdAsync(id);
         public async Task CreateAsync(Player newPlayer) => await _repository.CreateAsync(newPlayer);
 
         public async Task CreateManyAsync(IEnumerable<Player> newPlayers)
@@ -44,8 +61,28 @@ namespace Soccer.BLL.Services
 
         public async Task RemoveAsync(string id) => await _repository.RemoveAsync(id);
 
-        public async Task<IEnumerable<Player>> SearchByListOfIdsAsync(IEnumerable<string> ids) => await _repository.SearchByListOfIdsAsync(ids);
+        public async Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids) => await _repository.GetPlayersByListOfIdsAsync(ids);
         public async Task<IEnumerable<Player>> SearchByNameAsync(string search) => await _repository.SearchByNameAsync(search);
+
+        public async Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, SortAndPagePlayerModel model) // TODO implement find model
+        {
+            var query = _repository.BuildQuery(from, to);
+
+            long count = await _repository.GetPlayersQueryCountAsync(query);
+
+            var players = await _repository.GetPlayersForPaginatedResponseAsync(model, query);
+
+            var result = new PaginatedResponse<PlayerVM> // TODO move to separate method
+            {
+                ItemsCount = count,
+                PageSize = model.PageSize,
+                TotalPages = (int)Math.Ceiling(decimal.Divide(count, model.PageSize)),
+                PageNumber = model.PageNumber,
+                Results = _mapper.Map<List<PlayerVM>>(players)
+            };
+
+            return result;
+        }
 
         public IEnumerable<Player> MapPlayerDTOListToPlayerList(IEnumerable<ResponsePlayerImportDTO> responsePlayerImportDto, string leagueId)
         {

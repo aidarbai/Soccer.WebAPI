@@ -19,6 +19,6 @@ namespace Soccer.BLL.Services.Interfaces
         
         Task RemoveAsync(string id);
 
-        Task<Dictionary<string, string>> GenerateLeaguesDictionaryAsync(IEnumerable<LeagueDTO> leagues);
+        Task<Dictionary<string, string>> GenerateLeaguesDictionaryAsync(IEnumerable<LeagueImportDTO> leagues);
     }
 }

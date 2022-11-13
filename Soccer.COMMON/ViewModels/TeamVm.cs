@@ -1,8 +1,8 @@
-﻿namespace Soccer.BLL.DTOs
+﻿namespace Soccer.COMMON.ViewModels
 {
-    public class TeamDTO
+    public class TeamVm
     {
-        public int Id { get; set; }
+        public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
         public int Founded { get; set; }
         public string? Logo { get; set; }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Soccer.BLL.Helpers;
+using Soccer.BLL.Services;
 using Soccer.BLL.Services.Interfaces;
+using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -39,18 +41,23 @@ namespace Soccer.Controllers
 
             var players = await _playerService.GetAllAsync();
 
-            //var test = players.Where(p => p.Statistics.Count > 1 && p.Statistics[0].Team == p.Statistics[1].Team);
-
             var test = players.Where(p => p.Statistics.Count > 1);
 
             return test;
+        }
+
+        [HttpGet]
+        [SwaggerOperation("Get players paginated")]
+        public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginateAsync([FromQuery] SortAndPagePlayerModel model)
+        {
+            return await _playerService.GetPlayersPaginatedAsync(model);
         }
 
         [HttpGet("team/{teamId}")]
         [SwaggerOperation("Get all players from team")]
         public async Task<IEnumerable<Player>> GetPlayersByTeamAsync(string teamId)
         {
-            var players = await _playerService.GetByTeamIdAsync(teamId);
+            var players = await _playerService.GetPlayersByTeamIdAsync(teamId);
 
             return players;
         }
@@ -60,9 +67,24 @@ namespace Soccer.Controllers
         [SwaggerOperation("Get player by ID")]
         public async Task<ActionResult<Player>> GetLeagueByIdAsync(string id)
         {
-            var league = await _playerService.GetByIdAsync(id);
+            var player = await _playerService.GetByIdAsync(id);
 
-            return league != null ? Ok(league) : NotFound();
+            return player != null ? Ok(player) : NotFound();
+        }
+
+        [HttpGet("searchByName")]
+        [SwaggerOperation("Find teams by name")]
+        public async Task<IEnumerable<Player>> FindTeamsAsync(string player)
+        {
+            return await _playerService.SearchByNameAsync(player);
+        }
+
+
+        [HttpGet("searchByAge")]
+        [SwaggerOperation("Find teams by name")]
+        public async Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, [FromQuery] SortAndPagePlayerModel model)
+        {
+            return await _playerService.SearchByAgeAsync(from, to, model);
         }
     }
 }

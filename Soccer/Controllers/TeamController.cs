@@ -48,7 +48,7 @@ namespace Soccer.Controllers
 
         [HttpGet]
         [SwaggerOperation("Get teams paginated")]
-        public async Task<PaginatedResponse<Team>> GetTeamsPaginateAsync([FromQuery] SortAndPageTeamModel model)
+        public async Task<PaginatedResponse<TeamVm>> GetTeamsPaginateAsync([FromQuery] SortAndPageTeamModel model)
         {
             return await _teamService.GetTeamsPaginateAsync(model);
         }
@@ -65,9 +65,9 @@ namespace Soccer.Controllers
 
         [HttpGet("search")]
         [SwaggerOperation("Find teams by name")]
-        public async Task<IEnumerable<Team>> FindTeamsAsync(string search)
+        public async Task<IEnumerable<Team>> FindTeamsAsync(string team)
         {
-            return await _teamService.SearchByNameAsync(search);
+            return await _teamService.SearchByNameAsync(team);
         }
     }
 }
