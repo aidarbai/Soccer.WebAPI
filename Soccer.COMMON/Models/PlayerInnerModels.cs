@@ -4,7 +4,7 @@
     {
         public class Birth
         {
-            public string Date { get; set; } = null!;
+            public DateTime? Date { get; set; } 
 
             public string Place { get; set; } = null!;
 

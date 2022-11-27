@@ -3,8 +3,19 @@ using static Soccer.COMMON.Constants.AppConstants;
 
 namespace Soccer.COMMON.ViewModels
 {
-    public class SortAndPagePlayerModel
+    public class PlayerSearchByParametersModel
     {
+        public uint AgeFrom { get; set; }
+
+        public uint AgeTo { get; set; }
+
+        public DateTime? DateOfBirthFrom { get; set; }
+
+        public DateTime? DateOfBirthTo { get; set; }
+
+        public uint CardsFrom { get; set; }
+
+        public uint CardsTo { get; set; }
         public PlayerSortBy SortBy { get; set; }
         public Order Order { get; set; }
         public uint PageNumber { get; set; } = 1;

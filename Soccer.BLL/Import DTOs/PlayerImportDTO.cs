@@ -12,7 +12,7 @@ namespace Soccer.BLL.DTOs
 
         public string Lastname { get; set; } = null!;
 
-        public int Age { get; set; }
+        //public int Age { get; set; }
 
         public Birth Birth { get; set; } = null!;
 

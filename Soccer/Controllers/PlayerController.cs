@@ -34,24 +34,12 @@ namespace Soccer.Controllers
             return Ok();
         }
 
-        [HttpGet("getall")]
-        [SwaggerOperation("Get all players")]
-        public async Task<IEnumerable<Player>> GetPlayersAsync()
-        {
-
-            var players = await _playerService.GetAllAsync();
-
-            var test = players.Where(p => p.Statistics.Count > 1);
-
-            return test;
-        }
-
-        [HttpGet]
-        [SwaggerOperation("Get players paginated")]
-        public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginateAsync([FromQuery] SortAndPagePlayerModel model)
-        {
-            return await _playerService.GetPlayersPaginatedAsync(model);
-        }
+        //[HttpGet]
+        //[SwaggerOperation("Get players paginated")]
+        //public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginateAsync([FromQuery] SortAndPagePlayerModel model)
+        //{
+        //    return await _playerService.GetPlayersPaginatedAsync(model);
+        //}
 
         [HttpGet("team/{teamId}")]
         [SwaggerOperation("Get all players from team")]
@@ -73,18 +61,17 @@ namespace Soccer.Controllers
         }
 
         [HttpGet("searchByName")]
-        [SwaggerOperation("Find teams by name")]
+        [SwaggerOperation("Find players by name")]
         public async Task<IEnumerable<Player>> FindTeamsAsync(string player)
         {
             return await _playerService.SearchByNameAsync(player);
         }
 
-
-        [HttpGet("searchByAge")]
-        [SwaggerOperation("Find teams by name")]
-        public async Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, [FromQuery] SortAndPagePlayerModel model)
+        [HttpGet("searchByParameters")]
+        [SwaggerOperation("Search players by parameters")]
+        public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync([FromQuery] PlayerSearchByParametersModel searchModel)
         {
-            return await _playerService.SearchByAgeAsync(from, to, model);
+            return await _playerService.SearchByParametersAsync(searchModel);
         }
     }
 }

@@ -80,9 +80,9 @@ namespace Soccer.BLL.Services
 
         public async Task ImportAllPlayersByTeamsListAsync()
         {
-            var teamIds = await _teamService.GetTeamIdsAsync();
+            //var teamIds = await _teamService.GetTeamIdsAsync();
 
-            //var teamIds = new string[] { "529", "530" };
+            var teamIds = new string[] { "529", "530" };
 
             foreach (var item in teamIds)
             {

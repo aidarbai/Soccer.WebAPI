@@ -30,15 +30,15 @@ namespace Soccer.DAL.Repositories
             var teams = await _collection
                                 .Find(Builders<Team>.Filter.Empty)
                                 .Sort(GetSortDefinition(model))
-                                .Skip((model.PageNumber - 1) * model.PageSize)
-                                .Limit(model.PageSize)
+                                .Skip(((int)model.PageNumber - 1) * (int)model.PageSize)
+                                .Limit((int)model.PageSize)
                                 .ToListAsync();
 
             var result = new PaginatedResponse<TeamVm>
             {
-                ItemsCount = count,
+                ItemsCount = (uint)count,
                 PageSize = model.PageSize,
-                TotalPages = (int)Math.Ceiling(decimal.Divide(count, model.PageSize)),
+                TotalPages = (uint)Math.Ceiling(decimal.Divide(count, model.PageSize)),
                 PageNumber = model.PageNumber,
 
                 Results= _mapper.Map<List<TeamVm>>(teams)

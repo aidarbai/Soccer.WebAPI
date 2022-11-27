@@ -1,26 +1,27 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Models;
-using System.Threading.Tasks;
 
 namespace Soccer.DAL.Repositories.Interfaces
 {
     public interface IPlayerRepository : IGenericRepository<Player>
     {
-        Task<PaginatedResponse<PlayerVM>> GetPlayersPaginatedAsync(SortAndPagePlayerModel model);
 
-        Task<List<Player>> GetPlayersForPaginatedResponseAsync(SortAndPagePlayerModel model, BsonDocument query);
+        //Task<List<Player>> GetPlayersForPaginatedResponseAsync(SortAndPagePlayerModel model, FilterDefinition<Player> filter);
+
+        Task<List<Player>> GetPlayersForPaginatedSearchResultAsync(PlayerSearchByParametersModel model, FilterDefinition<Player> filter);
 
         Task<long> GetPlayersCountAsync();
 
-        Task<long> GetPlayersQueryCountAsync(BsonDocument query);
+        Task<long> GetPlayersQueryCountAsync(FilterDefinition<Player> query);
 
         Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string id);
 
         Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids);
 
         Task<IEnumerable<Player>> SearchByNameAsync(string search);
-
-        BsonDocument BuildQuery(int from, int to);
+       
+        FilterDefinition<Player> BuildFilter(PlayerSearchByParametersModel searchModel);
     }
 }

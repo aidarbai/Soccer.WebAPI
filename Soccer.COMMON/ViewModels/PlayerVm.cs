@@ -12,7 +12,19 @@ namespace Soccer.COMMON.ViewModels
 
         public string Lastname { get; set; } = null!;
 
-        public int Age { get; set; }
+        public int Age
+        {
+            get
+            {
+                if (Birth.Date.HasValue)
+                {
+                    var timespan = DateTime.Now.Subtract(Birth.Date.Value);
+                    return (int)timespan.TotalDays / 365;
+                }
+
+                return 0;
+            }
+        }
 
         public Birth Birth { get; set; } = null!;
 

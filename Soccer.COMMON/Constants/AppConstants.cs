@@ -28,7 +28,9 @@
         public enum PlayerSortBy
         {
             FIRSTNAME,
-            LASTNAME
+            LASTNAME,
+            AGE,
+            GAMESPLAYED
         }
     }
 }

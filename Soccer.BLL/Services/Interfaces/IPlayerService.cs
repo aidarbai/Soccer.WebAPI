@@ -6,8 +6,7 @@ namespace Soccer.BLL.Services.Interfaces
 {
     public interface IPlayerService
     {
-        Task<IEnumerable<Player>> GetAllAsync();
-        Task<PaginatedResponse<PlayerVM>> GetPlayersPaginatedAsync(SortAndPagePlayerModel model);
+        //Task<PaginatedResponse<PlayerVM>> GetPlayersPaginatedAsync(SortAndPagePlayerModel model);
 
         Task<Player> GetByIdAsync(string id);
 
@@ -22,7 +21,11 @@ namespace Soccer.BLL.Services.Interfaces
 
         Task<IEnumerable<Player>> SearchByNameAsync(string search);
 
-        Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, SortAndPagePlayerModel model);
+        //Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, SortAndPagePlayerModel model);
+
+        //Task<PaginatedResponse<PlayerVM>> SearchByDateOfBirthAsync(string from, string to, SortAndPagePlayerModel model);
+
+        Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel);
 
         IEnumerable<Player> MapPlayerDTOListToPlayerList(IEnumerable<ResponsePlayerImportDTO> responsePlayerImportDto, string leagueId);
     }
