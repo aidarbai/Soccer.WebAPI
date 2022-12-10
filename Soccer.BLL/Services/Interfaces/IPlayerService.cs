@@ -21,10 +21,6 @@ namespace Soccer.BLL.Services.Interfaces
 
         Task<IEnumerable<Player>> SearchByNameAsync(string search);
 
-        //Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, SortAndPagePlayerModel model);
-
-        //Task<PaginatedResponse<PlayerVM>> SearchByDateOfBirthAsync(string from, string to, SortAndPagePlayerModel model);
-
         Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel);
 
         IEnumerable<Player> MapPlayerDTOListToPlayerList(IEnumerable<ResponsePlayerImportDTO> responsePlayerImportDto, string leagueId);

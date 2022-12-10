@@ -14,8 +14,6 @@ namespace Soccer.DAL.Repositories
 {
     public class PlayerRepository : GenericRepository<Player>, IPlayerRepository
     {
-        private readonly IMapper _mapper;
-
         private static readonly Dictionary<PlayerSortBy, string> _dictionary = new()
         {
             { PlayerSortBy.FIRSTNAME, "Firstname"},
@@ -23,9 +21,8 @@ namespace Soccer.DAL.Repositories
             { PlayerSortBy.AGE,"Birth.Date"},
             { PlayerSortBy.GAMESPLAYED, "Statistics.Games.Appearences"}
         };
-        public PlayerRepository(IConfiguration configuration, IMapper mapper) : base(configuration)
+        public PlayerRepository(IConfiguration configuration) : base(configuration)
         {
-            _mapper = mapper;
         }
 
         //public async Task<List<Player>> GetPlayersForPaginatedResponseAsync(SortAndPagePlayerModel model, FilterDefinition<Player> filter)
@@ -63,10 +60,17 @@ namespace Soccer.DAL.Repositories
         {
             filter ??= Builders<Player>.Filter.Empty;
 
+            var filterDebug1 = filter.Render(_collection.DocumentSerializer, _collection.Settings.SerializerRegistry).ToJson();
+
+            var registrySerializer = BsonSerializer.SerializerRegistry;
+            var documentSerializer = registrySerializer.GetSerializer<Player>();
+            var rendered = filter.Render(documentSerializer, registrySerializer);
+            var filterDebug2 = rendered.ToJson();
+
             var players = await _collection
                                     .Find(filter)
                                     .Sort(GetSortDefinitionForSearchModel(model))
-                                    .Skip((int)(model.PageNumber - 1) * (int)model.PageSize)
+                                    .Skip((int)model.PageNumber * (int)model.PageSize)
                                     .Limit((int)model.PageSize)
                                     .ToListAsync();
 
@@ -81,14 +85,11 @@ namespace Soccer.DAL.Repositories
                 return Builders<Player>.Sort.Ascending(t => t.Name);
             }
 
-            if (model.Order == Order.ASC && model.SortBy == PlayerSortBy.AGE) //TODO ???
+            if (model.SortBy == PlayerSortBy.AGE)
             {
-                return Builders<Player>.Sort.Descending(_dictionary[model.SortBy]);
-            }
-
-            if (model.Order == Order.DESC && model.SortBy == PlayerSortBy.AGE)
-            {
-                return Builders<Player>.Sort.Ascending(_dictionary[model.SortBy]);
+                return model.Order == Order.ASC? 
+                                      Builders<Player>.Sort.Descending(_dictionary[model.SortBy]) :
+                                      Builders<Player>.Sort.Ascending(_dictionary[model.SortBy]);
             }
 
             if (model.Order == Order.ASC)
@@ -99,14 +100,6 @@ namespace Soccer.DAL.Repositories
             return Builders<Player>.Sort.Descending(_dictionary[model.SortBy]);
 
             //return Builders<Player>.Sort.Ascending("Birth.Date");
-
-        }
-
-        public async Task<long> GetPlayersCountAsync()
-        {
-            var count = await _collection.EstimatedDocumentCountAsync();
-
-            return count;
         }
 
         public async Task<long> GetPlayersQueryCountAsync(FilterDefinition<Player> filter)
@@ -116,10 +109,12 @@ namespace Soccer.DAL.Repositories
             return count;
         }
 
-
-        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId)
+        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId) //TODO paginate
         {
-            var matchedDocuments = await _collection.Find(c => c.Statistics.Any(s => s.Team == teamId)).ToListAsync();
+            //var matchedDocuments = await _collection.Find(c => c.Statistics.Any(s => s.Team == teamId)).ToListAsync(); //TODO check for LINQ everywhere
+            
+            var filter = Builders<Player>.Filter.ElemMatch(x => x.Statistics, y => y.Team == teamId);
+            var matchedDocuments = await _collection.Find(filter).ToListAsync();
 
             return matchedDocuments;
         }
@@ -140,6 +135,7 @@ namespace Soccer.DAL.Repositories
                 var builder = Builders<Player>.Filter;
                 var queryExpr = new BsonRegularExpression(new Regex(search, RegexOptions.IgnoreCase));
                 var filter = builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
+
                 return await _collection.Find(filter).ToListAsync();
             }
 
@@ -148,79 +144,6 @@ namespace Soccer.DAL.Repositories
 
             return await _collection.Find(nameFilter).ToListAsync();
         }
-        private void BuildDateOfBirthFilterNew(ref FilterDefinition<Player> filter, DateTime? from, DateTime? to) // TODO parse find model => move to helper
-        {
-            if (from != null)
-            {
-                filter &= Builders<Player>.Filter.Gte(p => p.Birth.Date, from);
-            }
-
-            if (to != null)
-            {
-                filter &= Builders<Player>.Filter.Lte(p => p.Birth.Date, to);
-            }
-        }
-
-        public FilterDefinition<Player> BuildFilter(PlayerSearchByParametersModel searchModel) // TODO parse find model => move to helper
-        {
-            FilterDefinition<Player> filter = Builders<Player>.Filter.Empty;
-
-            DateTime? dateFrom = null;
-            DateTime? dateTo = null;
-
-            if (searchModel.AgeFrom > 0)
-            {
-                dateTo = DateTime.Now.AddYears(-((int)searchModel.AgeFrom));
-            }
-
-            if (searchModel.AgeTo > 0)
-            {
-                var dateToYears = DateTime.Now.AddYears(-((int)searchModel.AgeTo + 1));
-
-                dateFrom = dateToYears.AddDays(1);
-            }
-
-            BuildDateOfBirthFilterNew(ref filter, dateFrom, dateTo); //TODO to calls in a row?
-
-#pragma warning disable CS8604 // Possible null reference argument.
-            BuildDateOfBirthFilterNew(ref filter, searchModel.DateOfBirthFrom, searchModel.DateOfBirthTo);
-#pragma warning restore CS8604 // Possible null reference argument.
-                        
-            if (searchModel.CardsFrom > 0)
-            {
-                //filter &= Builders<Player>.Filter.ElemMatch("Statistics",
-                //    Builders<Statistic>.Filter.Gte("Cards.Yellow", searchModel.cardsFrom) | 
-                //          Builders<Statistic>.Filter.Gte("Cards.Yellowred", searchModel.cardsFrom) |
-                //          Builders<Statistic>.Filter.Gte("Cards.Red", searchModel.cardsFrom));
-
-                filter &= Builders<Player>.Filter.ElemMatch("Statistics",
-                    Builders<Statistic>.Filter.Gte("Cards.Yellow", searchModel.CardsFrom));
-            }
-
-            if (searchModel.CardsTo > 0)
-            {
-                //filter &= Builders<Player>.Filter.ElemMatch("Statistics",
-                //    Builders<Statistic>.Filter.Lte("Cards.Yellow", searchModel.cardsTo) |
-                //          Builders<Statistic>.Filter.Lte("Cards.Yellowred", searchModel.cardsTo) |
-                //          Builders<Statistic>.Filter.Lte("Cards.Red", searchModel.cardsTo));
-
-                filter &= Builders<Player>.Filter.ElemMatch("Statistics",
-                    Builders<Statistic>.Filter.Lte("Cards.Yellow", searchModel.CardsTo));
-            }
-
-            if (searchModel.CardsFrom > 0 && searchModel.CardsTo > 0)
-            {
-
-            }
-
-            var filterDebug1 = filter.Render(_collection.DocumentSerializer, _collection.Settings.SerializerRegistry).ToJson();
-
-            var registrySerializer = BsonSerializer.SerializerRegistry;
-            var documentSerializer = registrySerializer.GetSerializer<Player>();
-            var rendered = filter.Render(documentSerializer, registrySerializer);
-            var filterDebug2 = rendered.ToJson();
-
-            return filter;
-        }
+        
     }
 }

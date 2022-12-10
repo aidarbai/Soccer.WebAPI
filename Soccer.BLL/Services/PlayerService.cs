@@ -3,7 +3,10 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using Soccer.BLL.DTOs;
 using Soccer.BLL.Services.Interfaces;
+using Soccer.COMMON.Constants;
+using Soccer.COMMON.Helpers;
 using Soccer.COMMON.ViewModels;
+using Soccer.DAL.Helpers;
 using Soccer.DAL.Models;
 using Soccer.DAL.Repositories.Interfaces;
 
@@ -63,72 +66,35 @@ namespace Soccer.BLL.Services
         public async Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids) => await _repository.GetPlayersByListOfIdsAsync(ids);
         public async Task<IEnumerable<Player>> SearchByNameAsync(string search) => await _repository.SearchByNameAsync(search);
 
-        //public async Task<PaginatedResponse<PlayerVM>> SearchByAgeAsync(int from, int to, SortAndPagePlayerModel model) // TODO implement find model
-        //{
-        //    var query = _repository.BuildAgeFilter(from, to);
-
-        //    long count = await _repository.GetPlayersQueryCountAsync(query);
-
-        //    var players = await _repository.GetPlayersForPaginatedResponseAsync(model, query);
-
-        //    uint totalPages = (uint)Math.Ceiling(decimal.Divide(count, model.PageSize));
-
-        //    var result = new PaginatedResponse<PlayerVM> // TODO move to separate method
-        //    {
-        //        ItemsCount = (ulong)count,
-        //        PageSize = model.PageSize > 50 ? 50 : model.PageSize,
-        //        TotalPages = totalPages,
-        //        PageNumber = model.PageNumber > totalPages ? totalPages : model.PageNumber,
-        //        Results = _mapper.Map<List<PlayerVM>>(players)
-        //    };
-
-        //    return result;
-        //}
-
-        //public async Task<PaginatedResponse<PlayerVM>> SearchByDateOfBirthAsync(string from, string to, SortAndPagePlayerModel model) // TODO implement find model
-        //{
-        //    var query = _repository.BuildDateOfBirthFilter(from, to);
-
-        //    long count = await _repository.GetPlayersQueryCountAsync(query);
-
-        //    uint totalPages = (uint)Math.Ceiling(decimal.Divide(count, model.PageSize));
-
-        //    var players = await _repository.GetPlayersForPaginatedResponseAsync(model, query);
-
-        //    var result = new PaginatedResponse<PlayerVM> // TODO move to separate method
-        //    {
-        //        ItemsCount = (ulong)count,
-        //        PageSize = model.PageSize > 50 ? 50 : model.PageSize,
-        //        TotalPages = totalPages,
-        //        PageNumber = model.PageNumber > totalPages ? totalPages : model.PageNumber,
-        //        Results = _mapper.Map<List<PlayerVM>>(players)
-        //    };
-
-        //    return result;
-        //}
-
         public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel)
         {
-            var filter = _repository.BuildFilter(searchModel);
+            //TODO call datehelper
+            DateHelper.ProcessAgeAndDates(searchModel);
 
-            ulong count = (ulong)await _repository.GetPlayersQueryCountAsync(filter);
+            var filter = FilterBuilder.Build(searchModel);
 
+            long count = await _repository.GetPlayersQueryCountAsync(filter);
             
-            searchModel.PageSize = searchModel.PageSize > 50 ? 50 : searchModel.PageSize;
-            //searchModel.PageSize = searchModel.PageSize < 4 ? 4 : searchModel.PageSize;
-            uint totalPages = (uint)Math.Ceiling(decimal.Divide(count, searchModel.PageSize));
-            
-            searchModel.PageNumber = searchModel.PageNumber > totalPages ? totalPages : searchModel.PageNumber;
-            //searchModel.PageNumber = searchModel.PageNumber == 0 ? 1 : searchModel.PageNumber; //TODO ???
+            int totalPages = (int)Math.Ceiling(decimal.Divide(count, (int)searchModel.PageSize));
+
+            if (searchModel.PageNumber > totalPages)
+            {
+                return new PaginatedResponse<PlayerVM>
+                {
+                    PageSize = (int)searchModel.PageSize,
+                    PageNumber = searchModel.PageNumber + 1,
+                    TotalPages = totalPages,
+                };
+            }
 
             var players = await _repository.GetPlayersForPaginatedSearchResultAsync(searchModel, filter);
 
-            var result = new PaginatedResponse<PlayerVM> // TODO move to separate method
+            var result = new PaginatedResponse<PlayerVM>
             {
                 ItemsCount = count,
-                PageSize = searchModel.PageSize,
+                PageSize = (int)searchModel.PageSize,
                 TotalPages = totalPages,
-                PageNumber = searchModel.PageNumber,
+                PageNumber = searchModel.PageNumber + 1,
                 Results = _mapper.Map<List<PlayerVM>>(players)
             };
 

@@ -1,4 +1,8 @@
-﻿namespace Soccer.COMMON.Constants
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
+namespace Soccer.COMMON.Constants
 {
     public static class AppConstants
     {
@@ -9,8 +13,8 @@
         }
         public enum Order
         {
-            DESC,
-            ASC
+            ASC,
+            DESC
         }
 
         public enum TeamSortBy
@@ -32,5 +36,15 @@
             AGE,
             GAMESPLAYED
         }
+
+        //public enum Pagesize
+        //{
+        //    P10 = 10,
+        //    P25 = 25,
+        //    P50 = 50,
+        //    P100 = 100
+        //}
+
+        public static readonly IReadOnlyCollection<int> pageSize = new List<int> { 10, 25, 50, 100 };
     }
 }

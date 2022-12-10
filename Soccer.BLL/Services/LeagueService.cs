@@ -20,7 +20,7 @@ namespace Soccer.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<League>> GetAllAsync() => await _repository.GetAllAsync(); // TODO move models from DAL to COMMON
+        public async Task<IEnumerable<League>> GetAllAsync() => await _repository.GetAllAsync();
 
         public async Task<League?> GetByIdAsync(string id) => await _repository.GetByIdAsync(id);
 

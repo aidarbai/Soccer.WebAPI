@@ -18,8 +18,12 @@ namespace Soccer.COMMON.ViewModels
             {
                 if (Birth.Date.HasValue)
                 {
-                    var timespan = DateTime.Now.Subtract(Birth.Date.Value);
-                    return (int)timespan.TotalDays / 365;
+                    var today = DateTime.Today;
+                    var age = today.Year - Birth.Date.Value.Year;
+                    
+                    if (Birth.Date.Value > today.AddYears(-age)) age--;
+                    
+                    return age;
                 }
 
                 return 0;

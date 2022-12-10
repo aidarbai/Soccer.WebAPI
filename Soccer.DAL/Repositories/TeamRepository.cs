@@ -36,9 +36,9 @@ namespace Soccer.DAL.Repositories
 
             var result = new PaginatedResponse<TeamVm>
             {
-                ItemsCount = (uint)count,
+                ItemsCount = count,
                 PageSize = model.PageSize,
-                TotalPages = (uint)Math.Ceiling(decimal.Divide(count, model.PageSize)),
+                TotalPages = (int)Math.Ceiling(decimal.Divide(count, model.PageSize)),
                 PageNumber = model.PageNumber,
 
                 Results= _mapper.Map<List<TeamVm>>(teams)
@@ -75,7 +75,7 @@ namespace Soccer.DAL.Repositories
                 return await _collection.Find(filter).ToListAsync();
             }
 
-            return await _collection.Find(t => t.Name == search).ToListAsync(); //TODO do we need an index?
+            return await _collection.Find(t => t.Name == search).ToListAsync(); //TODO create text index
         }
     }
 }

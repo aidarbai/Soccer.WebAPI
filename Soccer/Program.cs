@@ -6,6 +6,10 @@ using MediatR;
 using Serilog;
 using Soccer.BLL.Services.Interfaces;
 using Soccer.DAL.Repositories.Interfaces;
+using FluentValidation.AspNetCore;
+using Soccer.BLL.Validators;
+using FluentValidation;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,8 +48,17 @@ builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<PlayerSearchByParametersModelValidator>();
+//builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+//builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program).Assembly);
+//ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+//ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

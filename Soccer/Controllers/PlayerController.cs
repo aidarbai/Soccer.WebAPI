@@ -34,7 +34,7 @@ namespace Soccer.Controllers
             return Ok();
         }
 
-        //[HttpGet]
+        //[HttpGet] //TODO create base class model
         //[SwaggerOperation("Get players paginated")]
         //public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginateAsync([FromQuery] SortAndPagePlayerModel model)
         //{

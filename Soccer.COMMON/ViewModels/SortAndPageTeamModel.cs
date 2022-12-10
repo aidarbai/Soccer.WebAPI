@@ -7,8 +7,8 @@ namespace Soccer.COMMON.ViewModels
     {
         public TeamSortBy SortBy { get; set; }
         public Order Order { get; set; }
-        public uint PageNumber { get; set; } = 1;
-        public uint PageSize { get; set; } = 4;
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 4;
 
         public override string ToString()
         {

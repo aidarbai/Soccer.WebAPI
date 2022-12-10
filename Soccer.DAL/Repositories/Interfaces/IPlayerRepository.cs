@@ -12,8 +12,6 @@ namespace Soccer.DAL.Repositories.Interfaces
 
         Task<List<Player>> GetPlayersForPaginatedSearchResultAsync(PlayerSearchByParametersModel model, FilterDefinition<Player> filter);
 
-        Task<long> GetPlayersCountAsync();
-
         Task<long> GetPlayersQueryCountAsync(FilterDefinition<Player> query);
 
         Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string id);
@@ -21,7 +19,5 @@ namespace Soccer.DAL.Repositories.Interfaces
         Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids);
 
         Task<IEnumerable<Player>> SearchByNameAsync(string search);
-       
-        FilterDefinition<Player> BuildFilter(PlayerSearchByParametersModel searchModel);
     }
 }
