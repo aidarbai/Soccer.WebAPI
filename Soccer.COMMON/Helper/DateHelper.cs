@@ -2,7 +2,7 @@
 
 namespace Soccer.COMMON.Helpers
 {
-    public static class DateHelper
+    public static class DateHelperForSearchModel
     {
         public static void ProcessAgeAndDates(PlayerSearchByParametersModel searchModel)
         {

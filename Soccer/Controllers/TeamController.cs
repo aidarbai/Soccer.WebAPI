@@ -55,7 +55,7 @@ namespace Soccer.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation("Get team by ID")]
-        public async Task<ActionResult<Team>> GetLeagueByIdAsync(string id)
+        public async Task<ActionResult<Team>> GetTeamByIdAsync(string id)
         {
             //var team = await _teamService.GetByIdAsync(id);
             var team = await _mediator.Send(new GetTeamByIdQuery(id)); // TODO try publish

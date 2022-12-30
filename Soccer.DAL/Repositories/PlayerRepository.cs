@@ -25,37 +25,6 @@ namespace Soccer.DAL.Repositories
         {
         }
 
-        //public async Task<List<Player>> GetPlayersForPaginatedResponseAsync(SortAndPagePlayerModel model, FilterDefinition<Player> filter)
-        //{
-        //    filter ??= Builders<Player>.Filter.Empty;
-
-        //    var players = await _collection
-        //                            .Find(filter)
-        //                            .Sort(GetSortDefinition(model))
-        //                            .Skip((int)(model.PageNumber - 1) * (int)model.PageSize)
-        //                            .Limit((int)model.PageSize)
-        //                            .ToListAsync();
-
-        //    return players;
-        //}
-
-        //private static SortDefinition<Player> GetSortDefinition(SortAndPagePlayerModel model)
-        //{
-
-        //    if (!_dictionary.ContainsKey(model.SortBy))
-        //    {
-        //        return Builders<Player>.Sort.Ascending(t => t.Name);
-        //    }
-
-        //    if (model.Order == Order.ASC)
-        //    {
-        //        return Builders<Player>.Sort.Ascending(_dictionary[model.SortBy]);
-        //    }
-
-        //    return Builders<Player>.Sort.Descending(_dictionary[model.SortBy]);
-
-        //}
-
         public async Task<List<Player>> GetPlayersForPaginatedSearchResultAsync(PlayerSearchByParametersModel model, FilterDefinition<Player> filter)
         {
             filter ??= Builders<Player>.Filter.Empty;
@@ -109,9 +78,11 @@ namespace Soccer.DAL.Repositories
             return count;
         }
 
-        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId) //TODO paginate
+        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId) //TODO paginate -> added to searchmodel
         {
-            //var matchedDocuments = await _collection.Find(c => c.Statistics.Any(s => s.Team == teamId)).ToListAsync(); //TODO check for LINQ everywhere
+            //var matchedDocuments = await _collection.Find(c => c.Statistics.Any(s => s.Team == teamId)).ToListAsync(); 
+            
+            //TODO check for LINQ everywhere
             
             var filter = Builders<Player>.Filter.ElemMatch(x => x.Statistics, y => y.Team == teamId);
             var matchedDocuments = await _collection.Find(filter).ToListAsync();
@@ -135,6 +106,8 @@ namespace Soccer.DAL.Repositories
                 var builder = Builders<Player>.Filter;
                 var queryExpr = new BsonRegularExpression(new Regex(search, RegexOptions.IgnoreCase));
                 var filter = builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
+
+                var filterDebug1 = filter.Render(_collection.DocumentSerializer, _collection.Settings.SerializerRegistry).ToJson();
 
                 return await _collection.Find(filter).ToListAsync();
             }

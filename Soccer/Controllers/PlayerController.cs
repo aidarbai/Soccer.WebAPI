@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Soccer.BLL.Helpers;
-using Soccer.BLL.Services;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Soccer.BLL.MediatR.Commands;
+using Soccer.BLL.MediatR.Notfications;
+using Soccer.BLL.MediatR.Queries;
 using Soccer.BLL.Services.Interfaces;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Models;
@@ -14,15 +16,16 @@ namespace Soccer.Controllers
     {
         private readonly IImportService _importService;
         private readonly IPlayerService _playerService;
-        private readonly ILogger<PlayerController> _logger;
+        private readonly IMediator _mediator;
+        
         public PlayerController(
             IImportService importService,
             IPlayerService playerService,
-            ILogger<PlayerController> logger)
+            IMediator mediator)
         {
             _importService = importService;
             _playerService = playerService;
-            _logger = logger;
+            _mediator = mediator;
         }
 
 
@@ -34,44 +37,33 @@ namespace Soccer.Controllers
             return Ok();
         }
 
-        //[HttpGet] //TODO create base class model
-        //[SwaggerOperation("Get players paginated")]
-        //public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginateAsync([FromQuery] SortAndPagePlayerModel model)
-        //{
-        //    return await _playerService.GetPlayersPaginatedAsync(model);
-        //}
-
-        [HttpGet("team/{teamId}")]
-        [SwaggerOperation("Get all players from team")]
-        public async Task<IEnumerable<Player>> GetPlayersByTeamAsync(string teamId)
+        [HttpGet("ImportPlayersByTeamId/{teamId}")]
+        public async Task<ActionResult> ImportPlayersByTeamIdAsync(string teamId, CancellationToken cancellationToken) //TODO how to validate?
         {
-            var players = await _playerService.GetPlayersByTeamIdAsync(teamId);
+            await _mediator.Send(new ImportPlayersCommand(teamId), cancellationToken); //TODO use just one publish
+            await _mediator.Publish(new PlayersAddedNotification(teamId), cancellationToken);
 
-            return players;
+            return Ok();
         }
-
 
         [HttpGet("{id}")]
         [SwaggerOperation("Get player by ID")]
-        public async Task<ActionResult<Player>> GetLeagueByIdAsync(string id)
+        public async Task<ActionResult<PlayerVM>> GetPlayerByIdAsync(string id, CancellationToken cancellationToken)
         {
-            var player = await _playerService.GetByIdAsync(id);
+            //var player = await _playerService.GetByIdAsync(id);
 
-            return player != null ? Ok(player) : NotFound();
-        }
+            var player = await _mediator.Send(new GetPlayerByIdQuery(id), cancellationToken);
 
-        [HttpGet("searchByName")]
-        [SwaggerOperation("Find players by name")]
-        public async Task<IEnumerable<Player>> FindTeamsAsync(string player)
-        {
-            return await _playerService.SearchByNameAsync(player);
+            return player != null ? Ok(player) : NoContent(); //TODO organize handlers folder
         }
 
         [HttpGet("searchByParameters")]
-        [SwaggerOperation("Search players by parameters")]
-        public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync([FromQuery] PlayerSearchByParametersModel searchModel)
+        [SwaggerOperation("Search players by parameters or get all players paginated")]
+        public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync([FromQuery] PlayerSearchByParametersModel searchModel, CancellationToken cancellationToken)
         {
-            return await _playerService.SearchByParametersAsync(searchModel);
+            //return await _playerService.SearchByParametersAsync(searchModel);
+            
+            return await _mediator.Send(new GetPlayersQuery(searchModel), cancellationToken);
         }
     }
 }

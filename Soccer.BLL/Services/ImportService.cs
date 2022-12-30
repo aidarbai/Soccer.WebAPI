@@ -155,31 +155,5 @@ namespace Soccer.BLL.Services
 #pragma warning restore CS8604 // Possible null reference argument.
             }
         }
-        //public async Task ImportPlayerByIdAsync(string playerId)
-        //{
-        //    string url = string.Format(_configuration["Football-API:PlayerById"], playerId, 1);
-
-        //    var result = await _dataDownloader.GetDataAsync<ResponseImportDTO<ResponsePlayerImportDTO>>(url);
-        //    var totalPages = result?.Paging?.Total;
-        //    if (totalPages > 1)
-        //    {
-        //        for (int i = 2; i <= totalPages; i++)
-        //        {
-        //            url = string.Format(_configuration["Football-API:PlayerById"], playerId, i);
-
-        //            var nextPageResult = await _dataDownloader.GetDataAsync<ResponseImportDTO<ResponsePlayerImportDTO>>(url);
-
-        //            if (nextPageResult?.Response!.Count > 0)
-        //                result?.Response?.AddRange(nextPageResult.Response);
-        //        }
-        //    }
-
-        //    if (result?.Response!.Count > 0)
-        //    {
-        //        var players = await _playerService.MapPlayerDTOListToPlayerList(result.Response);
-
-        //        await _playerService.CreateManyAsync(players);
-        //    }
-        //}
     }
 }

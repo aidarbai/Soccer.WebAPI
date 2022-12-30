@@ -9,6 +9,12 @@ namespace Soccer.BLL.Validators
     {
         public PlayerSearchByParametersModelValidator()
         {
+            RuleFor(x => x.TeamId)
+                .MaximumLength(10);
+
+            RuleFor(x => x.Name)
+                .MaximumLength(50);
+
             When(x => x.DateOfBirthFrom.HasValue || x.DateOfBirthTo.HasValue, () =>
             {
                 RuleFor(x => x.AgeFrom)

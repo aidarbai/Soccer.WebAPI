@@ -1,11 +1,13 @@
 ﻿using System.Text;
 using static Soccer.COMMON.Constants.AppConstants;
-using static Soccer.COMMON.Models.PlayerInnerModels;
 
 namespace Soccer.COMMON.ViewModels
 {
     public class PlayerSearchByParametersModel
     {
+        public string? TeamId { get; set; }
+
+        public string? Name { get; set; }
         public int AgeFrom { get; set; }
 
         public int AgeTo { get; set; }

@@ -16,6 +16,6 @@ namespace Soccer.BLL.MediatR.Handlers
 
         public async Task<Team> Handle(
             GetTeamByIdQuery request,
-            CancellationToken cancellationToken) => await _repository.GetByIdAsync(request.id);
+            CancellationToken cancellationToken) => await _repository.GetByIdAsync(request.Id);
     }
 }

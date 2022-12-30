@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 using Soccer.BLL.DTOs;
 using Soccer.BLL.Services.Interfaces;
-using Soccer.COMMON.Constants;
 using Soccer.COMMON.Helpers;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Helpers;
@@ -16,38 +14,14 @@ namespace Soccer.BLL.Services
     {
 
         private readonly IPlayerRepository _repository;
-        private readonly ILeagueService _leagueService;
-        private readonly ITeamService _teamService;
         private readonly IMapper _mapper;
         public PlayerService(
             IPlayerRepository repository,
-            ILeagueService leagueService,
-            ITeamService teamService,
             IMapper mapper)
         {
             _repository = repository;
-            _leagueService = leagueService;
-            _teamService = teamService;
             _mapper = mapper;
         }
-
-        //public async Task<PaginatedResponse<PlayerVM>> GetPlayersPaginatedAsync(SortAndPagePlayerModel model)
-        //{
-        //    var count = await _repository.GetPlayersCountAsync();
-
-        //    var players = await _repository.GetPlayersForPaginatedResponseAsync(model, null!);
-
-        //    var result = new PaginatedResponse<PlayerVM>
-        //    {
-        //        ItemsCount = (ulong)count,
-        //        PageSize = model.PageSize,
-        //        TotalPages = (uint)Math.Ceiling(decimal.Divide(count, model.PageSize)),
-        //        PageNumber = model.PageNumber,
-        //        Results = _mapper.Map<List<PlayerVM>>(players)
-        //    };
-
-        //    return result;
-        //}
 
         public async Task<Player> GetByIdAsync(string id) => await _repository.GetByIdAsync(id);
 
@@ -68,8 +42,8 @@ namespace Soccer.BLL.Services
 
         public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel)
         {
-            //TODO call datehelper
-            DateHelper.ProcessAgeAndDates(searchModel);
+            //TODO call datehelper -> implemeted, needs a review
+            DateHelperForSearchModel.ProcessAgeAndDates(searchModel);
 
             var filter = FilterBuilder.Build(searchModel);
 
@@ -77,7 +51,7 @@ namespace Soccer.BLL.Services
             
             int totalPages = (int)Math.Ceiling(decimal.Divide(count, (int)searchModel.PageSize));
 
-            if (searchModel.PageNumber > totalPages)
+            if (searchModel.PageNumber > totalPages) //TODO test for if: parameters and returns
             {
                 return new PaginatedResponse<PlayerVM>
                 {
