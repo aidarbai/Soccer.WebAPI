@@ -16,7 +16,6 @@ namespace Soccer.BLL.Mappings
             .ForMember(dest => dest.Name, prop => prop.MapFrom(src => src.Player.Name))
             .ForMember(dest => dest.Firstname, prop => prop.MapFrom(src => src.Player.Firstname))
             .ForMember(dest => dest.Lastname, prop => prop.MapFrom(src => src.Player.Lastname))
-            //.ForMember(dest => dest.Age, prop => prop.MapFrom(src => src.Player.Age))
             .ForMember(dest => dest.Birth, prop => prop.MapFrom(src => src.Player.Birth))
             .ForMember(dest => dest.Nationality, prop => prop.MapFrom(src => src.Player.Nationality))
             .ForMember(dest => dest.Height, prop => prop.MapFrom(src => src.Player.Height))

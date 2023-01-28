@@ -6,7 +6,7 @@ using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Helpers;
 using Soccer.DAL.Repositories.Interfaces;
 
-namespace Soccer.BLL.MediatR.Handlers
+namespace Soccer.BLL.MediatR.Handlers.Players
 {
     public class GetPlayersHandler : IRequestHandler<GetPlayersQuery, PaginatedResponse<PlayerVM>>
     {
@@ -30,13 +30,13 @@ namespace Soccer.BLL.MediatR.Handlers
 
             long count = await _repository.GetPlayersQueryCountAsync(filter);
 
-            int totalPages = (int)Math.Ceiling(decimal.Divide(count, (int)request.SearchModel.PageSize));
+            int totalPages = (int)Math.Ceiling(decimal.Divide(count, request.SearchModel.PageSize));
 
             if (request.SearchModel.PageNumber > totalPages)
             {
                 return new PaginatedResponse<PlayerVM>
                 {
-                    PageSize = (int)request.SearchModel.PageSize,
+                    PageSize = request.SearchModel.PageSize,
                     PageNumber = request.SearchModel.PageNumber + 1,
                     TotalPages = totalPages,
                 };
@@ -47,7 +47,7 @@ namespace Soccer.BLL.MediatR.Handlers
             var result = new PaginatedResponse<PlayerVM>
             {
                 ItemsCount = count,
-                PageSize = (int)request.SearchModel.PageSize,
+                PageSize = request.SearchModel.PageSize,
                 TotalPages = totalPages,
                 PageNumber = request.SearchModel.PageNumber + 1,
                 Results = _mapper.Map<List<PlayerVM>>(players)

@@ -1,9 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
-using Soccer.BLL.DTOs;
-using Soccer.DAL.Models;
-using Microsoft.Extensions.Logging;
-using Soccer.BLL.Services.Interfaces;
+﻿global using AutoMapper;
+global using Soccer.BLL.DTOs;
+global using Soccer.DAL.Models;
+global using Soccer.BLL.Services.Interfaces;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Logging;
+
 
 namespace Soccer.BLL.Services
 {
@@ -41,7 +42,7 @@ namespace Soccer.BLL.Services
             string url = string.Format(_configuration["Football-API:LeagueById"], leagueId);
 
             var result = await _dataDownloader.GetDataAsync<ResponseImportDTO<ResponseLeagueImportDTO>>(url);
-            // TODO test mock getDataAsync returns 1) null 2) returns object -> check if Map and CreateAsync have been called (mock verify times)
+            
             if (result?.Response!.Count > 0)
             {
                 var leagueImportDto = result.Response!.FirstOrDefault();
@@ -91,7 +92,7 @@ namespace Soccer.BLL.Services
             }
         }
 
-        private async Task ImportPlayersByTeamAsync(string teamId)
+        public async Task ImportPlayersByTeamAsync(string teamId)
         {
             string leagueId = _configuration["Football-API:LeagueId"];
             string url = string.Format(_configuration["Football-API:PlayersByTeamId"], teamId, 1);

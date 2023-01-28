@@ -3,7 +3,7 @@ using Soccer.BLL.MediatR.Commands;
 using Soccer.DAL.Models;
 using Soccer.DAL.Repositories.Interfaces;
 
-namespace Soccer.BLL.MediatR.Handlers
+namespace Soccer.BLL.MediatR.Handlers.Teams
 {
     public class AddTeamHandler : IRequestHandler<AddTeamCommand, Team>
     {

@@ -7,5 +7,7 @@
         Task ImportTeamsByLeagueAsync();
 
         Task ImportAllPlayersByTeamsListAsync();
+
+        Task ImportPlayersByTeamAsync(string teamId);
     }
 }

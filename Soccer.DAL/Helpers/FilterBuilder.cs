@@ -19,18 +19,20 @@ namespace Soccer.DAL.Helpers
 
             if (!string.IsNullOrEmpty(searchModel.Name))
             {
-                if (searchModel.Name.First() == '*' || searchModel.Name.Last() == '*') //TODO call private method
-                {
-                    searchModel.Name = searchModel.Name.Replace("*", string.Empty);
-                    var builder = Builders<Player>.Filter;
-                    var queryExpr = new BsonRegularExpression(new Regex(searchModel.Name, RegexOptions.IgnoreCase));
-                    filter &= builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
-                }
+                //if (searchModel.Name.First() == '*' || searchModel.Name.Last() == '*') //TODO call private method
+                //{
+                //    searchModel.Name = searchModel.Name.Replace("*", string.Empty);
+                //    var builder = Builders<Player>.Filter;
+                //    var queryExpr = new BsonRegularExpression(new Regex(searchModel.Name, RegexOptions.IgnoreCase));
+                //    filter &= builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
+                //}
 
-                else
-                {
-                    filter &= Builders<Player>.Filter.Text(searchModel.Name);
-                }
+                //else
+                //{
+                //    filter &= Builders<Player>.Filter.Text(searchModel.Name);
+                //}
+
+                filter &= GetFilterByName(searchModel.Name);
             }
 
             if (searchModel.DateOfBirthFrom.HasValue)
@@ -84,6 +86,22 @@ namespace Soccer.DAL.Helpers
             return filter;
         }
 
-        //private void 
+        private static FilterDefinition<Player> GetFilterByName(string name)
+        {
+
+            if (name.First() == '*' || name.Last() == '*')
+            {
+                name = name.Replace("*", string.Empty);
+                var builder = Builders<Player>.Filter;
+                var queryExpr = new BsonRegularExpression(new Regex(name, RegexOptions.IgnoreCase));
+                return builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
+            }
+
+            else
+            {
+                return Builders<Player>.Filter.Text(name);
+            }
+
+        }
     }
 }

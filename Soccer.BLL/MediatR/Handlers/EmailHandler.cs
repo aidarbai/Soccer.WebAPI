@@ -4,7 +4,7 @@ using Soccer.BLL.MediatR.Notfications;
 
 namespace Soccer.BLL.MediatR.Handlers
 {
-    public class EmailHandler : INotificationHandler<PlayersAddedNotification>
+    public class EmailHandler : INotificationHandler<ImportPlayersByTeamIdNotification>
     {
         private readonly ILogger<EmailHandler> _logger;
 
@@ -13,7 +13,7 @@ namespace Soccer.BLL.MediatR.Handlers
             _logger = logger;
         }
 
-        public async Task Handle(PlayersAddedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(ImportPlayersByTeamIdNotification notification, CancellationToken cancellationToken)
         {
            await Task.Run(() => _logger.LogInformation("Importing players for team {team}, email handler called", notification.Team), cancellationToken);
         }

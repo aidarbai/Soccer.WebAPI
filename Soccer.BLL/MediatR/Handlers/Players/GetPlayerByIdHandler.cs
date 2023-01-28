@@ -4,7 +4,7 @@ using Soccer.BLL.MediatR.Queries;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Repositories.Interfaces;
 
-namespace Soccer.BLL.MediatR.Handlers
+namespace Soccer.BLL.MediatR.Handlers.Players
 {
     public class GetPlayerByIdHandler : IRequestHandler<GetPlayerByIdQuery, PlayerVM>
     {

@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using MongoDB.Driver;
-using Soccer.BLL.DTOs;
-using Soccer.BLL.Services.Interfaces;
+﻿using MongoDB.Driver;
 using Soccer.COMMON.Helpers;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Helpers;
-using Soccer.DAL.Models;
 using Soccer.DAL.Repositories.Interfaces;
 
 namespace Soccer.BLL.Services
@@ -22,10 +18,7 @@ namespace Soccer.BLL.Services
             _repository = repository;
             _mapper = mapper;
         }
-
-        public async Task<Player> GetByIdAsync(string id) => await _repository.GetByIdAsync(id);
-
-        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string id) => await _repository.GetPlayersByTeamIdAsync(id);
+        
         public async Task CreateAsync(Player newPlayer) => await _repository.CreateAsync(newPlayer);
 
         public async Task CreateManyAsync(IEnumerable<Player> newPlayers)
@@ -38,24 +31,22 @@ namespace Soccer.BLL.Services
         public async Task RemoveAsync(string id) => await _repository.RemoveAsync(id);
 
         public async Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids) => await _repository.GetPlayersByListOfIdsAsync(ids);
-        public async Task<IEnumerable<Player>> SearchByNameAsync(string search) => await _repository.SearchByNameAsync(search);
 
         public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel)
         {
-            //TODO call datehelper -> implemeted, needs a review
             DateHelperForSearchModel.ProcessAgeAndDates(searchModel);
 
             var filter = FilterBuilder.Build(searchModel);
 
             long count = await _repository.GetPlayersQueryCountAsync(filter);
             
-            int totalPages = (int)Math.Ceiling(decimal.Divide(count, (int)searchModel.PageSize));
+            int totalPages = (int)Math.Ceiling(decimal.Divide(count, searchModel.PageSize));
 
-            if (searchModel.PageNumber > totalPages) //TODO test for if: parameters and returns
+            if (searchModel.PageNumber > totalPages)
             {
                 return new PaginatedResponse<PlayerVM>
                 {
-                    PageSize = (int)searchModel.PageSize,
+                    PageSize = searchModel.PageSize,
                     PageNumber = searchModel.PageNumber + 1,
                     TotalPages = totalPages,
                 };
@@ -66,7 +57,7 @@ namespace Soccer.BLL.Services
             var result = new PaginatedResponse<PlayerVM>
             {
                 ItemsCount = count,
-                PageSize = (int)searchModel.PageSize,
+                PageSize = searchModel.PageSize,
                 TotalPages = totalPages,
                 PageNumber = searchModel.PageNumber + 1,
                 Results = _mapper.Map<List<PlayerVM>>(players)

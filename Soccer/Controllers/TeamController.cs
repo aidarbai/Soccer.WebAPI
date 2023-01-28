@@ -39,9 +39,6 @@ namespace Soccer.Controllers
         {
             var teams = await _mediator.Send(new GetTeamsQuery()); // TODO read about Cancellation token
 
-
-            //TODO try out global using
-
             //return await _teamService.GetAllAsync();
             return teams;
         }
@@ -58,7 +55,7 @@ namespace Soccer.Controllers
         public async Task<ActionResult<Team>> GetTeamByIdAsync(string id)
         {
             //var team = await _teamService.GetByIdAsync(id);
-            var team = await _mediator.Send(new GetTeamByIdQuery(id)); // TODO try publish
+            var team = await _mediator.Send(new GetTeamByIdQuery(id));
 
             return team != null ? Ok(team) : NotFound();
         }

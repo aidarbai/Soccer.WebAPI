@@ -2,6 +2,6 @@
 
 namespace Soccer.BLL.MediatR.Notfications
 {
-    public record PlayersAddedNotification(string Team) : INotification;
+    public record ImportPlayersByTeamIdNotification(string Team) : INotification;
     
 }

@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Soccer.DAL\Soccer.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MediatR\Handlers\Leagues\" />
+  </ItemGroup>
+
 </Project>

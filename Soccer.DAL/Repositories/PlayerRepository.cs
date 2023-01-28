@@ -14,7 +14,7 @@ namespace Soccer.DAL.Repositories
 {
     public class PlayerRepository : GenericRepository<Player>, IPlayerRepository
     {
-        private static readonly Dictionary<PlayerSortBy, string> _dictionary = new()
+        private static readonly Dictionary<PlayerSortBy, string> _sortByFieldsDictionary = new()
         {
             { PlayerSortBy.FIRSTNAME, "Firstname"},
             { PlayerSortBy.LASTNAME, "Lastname"},
@@ -49,7 +49,7 @@ namespace Soccer.DAL.Repositories
         private static SortDefinition<Player> GetSortDefinitionForSearchModel(PlayerSearchByParametersModel model)
         {
 
-            if (!_dictionary.ContainsKey(model.SortBy))
+            if (!_sortByFieldsDictionary.ContainsKey(model.SortBy))
             {
                 return Builders<Player>.Sort.Ascending(t => t.Name);
             }
@@ -57,16 +57,16 @@ namespace Soccer.DAL.Repositories
             if (model.SortBy == PlayerSortBy.AGE)
             {
                 return model.Order == Order.ASC? 
-                                      Builders<Player>.Sort.Descending(_dictionary[model.SortBy]) :
-                                      Builders<Player>.Sort.Ascending(_dictionary[model.SortBy]);
+                                      Builders<Player>.Sort.Descending(_sortByFieldsDictionary[model.SortBy]) :
+                                      Builders<Player>.Sort.Ascending(_sortByFieldsDictionary[model.SortBy]);
             }
 
             if (model.Order == Order.ASC)
             {
-                return Builders<Player>.Sort.Ascending(_dictionary[model.SortBy]);
+                return Builders<Player>.Sort.Ascending(_sortByFieldsDictionary[model.SortBy]);
             }
 
-            return Builders<Player>.Sort.Descending(_dictionary[model.SortBy]);
+            return Builders<Player>.Sort.Descending(_sortByFieldsDictionary[model.SortBy]);
 
             //return Builders<Player>.Sort.Ascending("Birth.Date");
         }
@@ -78,11 +78,9 @@ namespace Soccer.DAL.Repositories
             return count;
         }
 
-        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId) //TODO paginate -> added to searchmodel
+        public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId)
         {
             //var matchedDocuments = await _collection.Find(c => c.Statistics.Any(s => s.Team == teamId)).ToListAsync(); 
-            
-            //TODO check for LINQ everywhere
             
             var filter = Builders<Player>.Filter.ElemMatch(x => x.Statistics, y => y.Team == teamId);
             var matchedDocuments = await _collection.Find(filter).ToListAsync();
@@ -97,26 +95,5 @@ namespace Soccer.DAL.Repositories
 
             return matchedDocuments;
         }
-
-        public async Task<IEnumerable<Player>> SearchByNameAsync(string search)
-        {
-            if (search.First() == '*' || search.Last() == '*')
-            {
-                search = search.Replace("*", string.Empty);
-                var builder = Builders<Player>.Filter;
-                var queryExpr = new BsonRegularExpression(new Regex(search, RegexOptions.IgnoreCase));
-                var filter = builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
-
-                var filterDebug1 = filter.Render(_collection.DocumentSerializer, _collection.Settings.SerializerRegistry).ToJson();
-
-                return await _collection.Find(filter).ToListAsync();
-            }
-
-            //var nameFilter = Builders<Player>.Filter.Eq("Firstname", search);
-            var nameFilter = Builders<Player>.Filter.Text(search);
-
-            return await _collection.Find(nameFilter).ToListAsync();
-        }
-        
     }
 }
