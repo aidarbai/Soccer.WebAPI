@@ -16,7 +16,7 @@ namespace Soccer.BLL.Mappings
             .ForMember(dest => dest.Country, prop => prop.MapFrom(src => src.Country.Name))
             .ForMember(dest => dest.Flag, prop => prop.MapFrom(src => src.Country.Flag));
 
-            CreateMap<LeagueVM, League>().ReverseMap();
+            CreateMap<LeagueVm, League>().ReverseMap();
         }
     }
 }

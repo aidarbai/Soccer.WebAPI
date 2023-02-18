@@ -2,7 +2,7 @@
 
 namespace Soccer.COMMON.ViewModels
 {
-    public class PlayerVM
+    public class PlayerVm
     {
         public string Id { get; set; } = null!;
 

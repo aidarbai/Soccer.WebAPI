@@ -6,7 +6,7 @@ namespace Soccer.DAL.Models
     public class League : Document
     {
         public string? Logo { get; set; }
-        public string? Country { get; set; }
+        public string Country { get; set; } = null!;
         public string? Flag { get; set; }
     }
 }

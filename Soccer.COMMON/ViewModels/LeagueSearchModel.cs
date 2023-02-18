@@ -3,12 +3,13 @@ using static Soccer.COMMON.Constants.AppConstants;
 
 namespace Soccer.COMMON.ViewModels
 {
-    public class SortAndPageTeamModel
+    public class LeagueSearchModel
     {
-        public TeamSortBy SortBy { get; set; }
+        public string? Name { get; set; }
+        public LeagueSortBy SortBy { get; set; }
         public Order Order { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 4;
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; } = 10;
 
         public override string ToString()
         {

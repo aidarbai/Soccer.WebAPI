@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Soccer.BLL.MediatR.Queries;
+using Soccer.BLL.MediatR.Queries.Players;
 using Soccer.COMMON.Helpers;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Helpers;
@@ -8,7 +8,7 @@ using Soccer.DAL.Repositories.Interfaces;
 
 namespace Soccer.BLL.MediatR.Handlers.Players
 {
-    public class GetPlayersHandler : IRequestHandler<GetPlayersQuery, PaginatedResponse<PlayerVM>>
+    public class GetPlayersHandler : IRequestHandler<GetPlayersQuery, PaginatedResponse<PlayerVm>>
     {
         private readonly IPlayerRepository _repository;
         private readonly IMapper _mapper;
@@ -20,13 +20,13 @@ namespace Soccer.BLL.MediatR.Handlers.Players
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResponse<PlayerVM>> Handle(
+        public async Task<PaginatedResponse<PlayerVm>> Handle(
             GetPlayersQuery request,
             CancellationToken cancellationToken)
         {
             DateHelperForSearchModel.ProcessAgeAndDates(request.SearchModel);
 
-            var filter = FilterBuilder.Build(request.SearchModel);
+            var filter = PlayerFilterBuilder.Build(request.SearchModel);
 
             long count = await _repository.GetPlayersQueryCountAsync(filter);
 
@@ -34,7 +34,7 @@ namespace Soccer.BLL.MediatR.Handlers.Players
 
             if (request.SearchModel.PageNumber > totalPages)
             {
-                return new PaginatedResponse<PlayerVM>
+                return new PaginatedResponse<PlayerVm>
                 {
                     PageSize = request.SearchModel.PageSize,
                     PageNumber = request.SearchModel.PageNumber + 1,
@@ -44,13 +44,13 @@ namespace Soccer.BLL.MediatR.Handlers.Players
 
             var players = await _repository.GetPlayersForPaginatedSearchResultAsync(request.SearchModel, filter);
 
-            var result = new PaginatedResponse<PlayerVM>
+            var result = new PaginatedResponse<PlayerVm>
             {
                 ItemsCount = count,
                 PageSize = request.SearchModel.PageSize,
                 TotalPages = totalPages,
                 PageNumber = request.SearchModel.PageNumber + 1,
-                Results = _mapper.Map<List<PlayerVM>>(players)
+                Results = _mapper.Map<List<PlayerVm>>(players)
             };
 
             return result;

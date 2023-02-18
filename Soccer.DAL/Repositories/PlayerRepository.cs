@@ -67,8 +67,6 @@ namespace Soccer.DAL.Repositories
             }
 
             return Builders<Player>.Sort.Descending(_sortByFieldsDictionary[model.SortBy]);
-
-            //return Builders<Player>.Sort.Ascending("Birth.Date");
         }
 
         public async Task<long> GetPlayersQueryCountAsync(FilterDefinition<Player> filter)
@@ -80,8 +78,6 @@ namespace Soccer.DAL.Repositories
 
         public async Task<IEnumerable<Player>> GetPlayersByTeamIdAsync(string teamId)
         {
-            //var matchedDocuments = await _collection.Find(c => c.Statistics.Any(s => s.Team == teamId)).ToListAsync(); 
-            
             var filter = Builders<Player>.Filter.ElemMatch(x => x.Statistics, y => y.Team == teamId);
             var matchedDocuments = await _collection.Find(filter).ToListAsync();
 

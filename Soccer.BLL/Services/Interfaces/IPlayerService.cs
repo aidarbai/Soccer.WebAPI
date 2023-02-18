@@ -14,7 +14,7 @@ namespace Soccer.BLL.Services.Interfaces
 
         Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids);
 
-        Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel);
+        Task<PaginatedResponse<PlayerVm>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel);
 
         IEnumerable<Player> MapPlayerDTOListToPlayerList(IEnumerable<ResponsePlayerImportDTO> responsePlayerImportDto, string leagueId);
     }

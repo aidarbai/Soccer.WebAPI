@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Soccer.COMMON.ViewModels;
@@ -14,40 +15,35 @@ namespace Soccer.DAL.Repositories
 {
     public class TeamRepository : GenericRepository<Team>, ITeamRepository
     {
-        private readonly IMapper _mapper;
         private static readonly Dictionary<TeamSortBy, Expression<Func<Team, object>>> _dictionary = new() {
             { TeamSortBy.NAME, x => x.Name},
             { TeamSortBy.FOUNDED, x => x.Founded}};
-        public TeamRepository(IConfiguration configuration, IMapper mapper) : base(configuration)
+        public TeamRepository(IConfiguration configuration) : base(configuration)
         {
-            _mapper = mapper;
         }
 
-        public async Task<PaginatedResponse<TeamVm>> GetTeamsPaginatedAsync(SortAndPageTeamModel model)
+        public async Task<List<Team>> GetTeamsForPaginatedSearchResultsAsync(TeamSearchModel model, FilterDefinition<Team> filter)
         {
-            var count = await _collection.EstimatedDocumentCountAsync();
+            filter ??= Builders<Team>.Filter.Empty;
+
+            var filterDebug1 = filter.Render(_collection.DocumentSerializer, _collection.Settings.SerializerRegistry).ToJson();
+
+            var registrySerializer = BsonSerializer.SerializerRegistry;
+            var documentSerializer = registrySerializer.GetSerializer<Team>();
+            var rendered = filter.Render(documentSerializer, registrySerializer);
+            var filterDebug2 = rendered.ToJson();
 
             var teams = await _collection
-                                .Find(Builders<Team>.Filter.Empty)
-                                .Sort(GetSortDefinition(model))
-                                .Skip(((int)model.PageNumber - 1) * (int)model.PageSize)
-                                .Limit((int)model.PageSize)
-                                .ToListAsync();
+                                    .Find(filter)
+                                    .Sort(GetSortDefinition(model))
+                                    .Skip((int)model.PageNumber * (int)model.PageSize)
+                                    .Limit((int)model.PageSize)
+                                    .ToListAsync();
 
-            var result = new PaginatedResponse<TeamVm>
-            {
-                ItemsCount = count,
-                PageSize = model.PageSize,
-                TotalPages = (int)Math.Ceiling(decimal.Divide(count, model.PageSize)),
-                PageNumber = model.PageNumber,
-
-                Results= _mapper.Map<List<TeamVm>>(teams)
-            };
-
-            return result;
+            return teams;
         }
 
-        private static SortDefinition<Team> GetSortDefinition(SortAndPageTeamModel model)
+        private static SortDefinition<Team> GetSortDefinition(TeamSearchModel model)
         {
 
             if (!_dictionary.ContainsKey(model.SortBy))
@@ -64,18 +60,11 @@ namespace Soccer.DAL.Repositories
 
         }
 
-        public async Task<IEnumerable<Team>> SearchByNameAsync(string search)
+        public async Task<long> GetTeamsQueryCountAsync(FilterDefinition<Team> filter)
         {
-            if (search.First() == '*' || search.Last() == '*')
-            {
-                var builder = Builders<Team>.Filter;
-                search = search.Replace("*", string.Empty);
-                var queryExpr = new BsonRegularExpression(new Regex(search, RegexOptions.IgnoreCase));
-                var filter = builder.Regex("Name", queryExpr) | builder.Regex("City", queryExpr);
-                return await _collection.Find(filter).ToListAsync();
-            }
+            var count = await _collection.Find(filter).CountDocumentsAsync();
 
-            return await _collection.Find(t => t.Name == search).ToListAsync(); //TODO create text index
+            return count;
         }
     }
 }

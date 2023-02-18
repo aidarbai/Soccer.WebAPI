@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
-using Soccer.BLL.MediatR.Queries;
+using Soccer.BLL.MediatR.Queries.Players;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Repositories.Interfaces;
 
 namespace Soccer.BLL.MediatR.Handlers.Players
 {
-    public class GetPlayerByIdHandler : IRequestHandler<GetPlayerByIdQuery, PlayerVM>
+    public class GetPlayerByIdHandler : IRequestHandler<GetPlayerByIdQuery, PlayerVm>
     {
         private readonly IPlayerRepository _repository;
         private readonly IMapper _mapper;
@@ -18,8 +18,8 @@ namespace Soccer.BLL.MediatR.Handlers.Players
             _mapper = mapper;
         }
 
-        public async Task<PlayerVM> Handle(
+        public async Task<PlayerVm> Handle(
             GetPlayerByIdQuery request,
-            CancellationToken cancellationToken) => _mapper.Map<PlayerVM>(await _repository.GetByIdAsync(request.Id));
+            CancellationToken cancellationToken) => _mapper.Map<PlayerVm>(await _repository.GetByIdAsync(request.Id));
     }
 }

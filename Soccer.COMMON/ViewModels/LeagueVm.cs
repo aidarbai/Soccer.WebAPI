@@ -1,6 +1,6 @@
 ﻿namespace Soccer.COMMON.ViewModels
 {
-    public class LeagueVM
+    public class LeagueVm
     {
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;

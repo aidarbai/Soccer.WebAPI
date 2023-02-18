@@ -32,11 +32,11 @@ namespace Soccer.BLL.Services
 
         public async Task<IEnumerable<Player>> GetPlayersByListOfIdsAsync(IEnumerable<string> ids) => await _repository.GetPlayersByListOfIdsAsync(ids);
 
-        public async Task<PaginatedResponse<PlayerVM>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel)
+        public async Task<PaginatedResponse<PlayerVm>> SearchByParametersAsync(PlayerSearchByParametersModel searchModel)
         {
             DateHelperForSearchModel.ProcessAgeAndDates(searchModel);
 
-            var filter = FilterBuilder.Build(searchModel);
+            var filter = PlayerFilterBuilder.Build(searchModel);
 
             long count = await _repository.GetPlayersQueryCountAsync(filter);
             
@@ -44,7 +44,7 @@ namespace Soccer.BLL.Services
 
             if (searchModel.PageNumber > totalPages)
             {
-                return new PaginatedResponse<PlayerVM>
+                return new PaginatedResponse<PlayerVm>
                 {
                     PageSize = searchModel.PageSize,
                     PageNumber = searchModel.PageNumber + 1,
@@ -54,13 +54,13 @@ namespace Soccer.BLL.Services
 
             var players = await _repository.GetPlayersForPaginatedSearchResultAsync(searchModel, filter);
 
-            var result = new PaginatedResponse<PlayerVM>
+            var result = new PaginatedResponse<PlayerVm>
             {
                 ItemsCount = count,
                 PageSize = searchModel.PageSize,
                 TotalPages = totalPages,
                 PageNumber = searchModel.PageNumber + 1,
-                Results = _mapper.Map<List<PlayerVM>>(players)
+                Results = _mapper.Map<List<PlayerVm>>(players)
             };
 
             return result;

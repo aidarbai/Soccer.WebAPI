@@ -23,6 +23,11 @@ namespace Soccer.COMMON.Constants
             FOUNDED
         }
 
+        public enum LeagueSortBy
+        {
+            NAME,
+            COUNTRY
+        }
         public static class Attributes
         {
             public const string NAME = "Name";

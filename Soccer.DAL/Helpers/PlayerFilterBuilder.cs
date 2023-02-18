@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Soccer.DAL.Helpers
 {
-    public static class FilterBuilder
+    public static class PlayerFilterBuilder
     {
         public static FilterDefinition<Player> Build(PlayerSearchByParametersModel searchModel)
         {
@@ -19,19 +19,6 @@ namespace Soccer.DAL.Helpers
 
             if (!string.IsNullOrEmpty(searchModel.Name))
             {
-                //if (searchModel.Name.First() == '*' || searchModel.Name.Last() == '*') //TODO call private method
-                //{
-                //    searchModel.Name = searchModel.Name.Replace("*", string.Empty);
-                //    var builder = Builders<Player>.Filter;
-                //    var queryExpr = new BsonRegularExpression(new Regex(searchModel.Name, RegexOptions.IgnoreCase));
-                //    filter &= builder.Regex("Firstname", queryExpr) | builder.Regex("Lastname", queryExpr);
-                //}
-
-                //else
-                //{
-                //    filter &= Builders<Player>.Filter.Text(searchModel.Name);
-                //}
-
                 filter &= GetFilterByName(searchModel.Name);
             }
 

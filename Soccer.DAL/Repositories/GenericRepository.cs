@@ -36,16 +36,6 @@ namespace Soccer.DAL.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _collection.Find(Builders<T>.Filter.Empty).ToListAsync();
 
-        //public async Task<List<T>> GetAllAsync()
-        //{
-        //    var filter = Builders<T>.Filter.Eq("Injured", false);
-        //    var test1 = await _collection.Find(filter).ToListAsync();
-
-        //    var test2 = await _collection.Find(_ => true).ToListAsync();
-
-        //    return await _collection.AsQueryable(new AggregateOptions { AllowDiskUse = true }).ToListAsync();
-        //}
-
         public async Task<T> GetByIdAsync(string id) => await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task CreateAsync(T newDocument)

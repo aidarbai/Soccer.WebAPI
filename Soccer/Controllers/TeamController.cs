@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Soccer.BLL.MediatR.Queries;
+using Soccer.BLL.MediatR.Queries.Teams;
 using Soccer.BLL.Services.Interfaces;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Models;
@@ -13,58 +13,39 @@ namespace Soccer.Controllers
     public class TeamController : ControllerBase
     {
         private readonly IImportService _importService;
-        private readonly ITeamService _teamService;
         private readonly IMediator _mediator;
         public TeamController(
             IImportService importService,
-            ITeamService teamService,
             IMediator mediator)
         {
             _importService = importService;
-            _teamService = teamService;
             _mediator = mediator;
         }
 
-        [HttpGet("ImportTeamsByLeague")]
-        public async Task<ActionResult> ImportTeamsAsync()
-        {
-            await _importService.ImportTeamsByLeagueAsync();
+        //[HttpGet("ImportTeamsByLeague")]
+        //public async Task<ActionResult> ImportTeamsAsync()
+        //{
+        //    await _importService.ImportTeamsByLeagueAsync();
 
-            return Ok();
-        }
-
-        [HttpGet("getall")]
-        [SwaggerOperation("Get all teams")]
-        public async Task<IEnumerable<Team>> GetTeamsAsync()
-        {
-            var teams = await _mediator.Send(new GetTeamsQuery()); // TODO read about Cancellation token
-
-            //return await _teamService.GetAllAsync();
-            return teams;
-        }
-
-        [HttpGet]
-        [SwaggerOperation("Get teams paginated")]
-        public async Task<PaginatedResponse<TeamVm>> GetTeamsPaginateAsync([FromQuery] SortAndPageTeamModel model)
-        {
-            return await _teamService.GetTeamsPaginateAsync(model);
-        }
+        //    return Ok();
+        //}
 
         [HttpGet("{id}")]
         [SwaggerOperation("Get team by ID")]
-        public async Task<ActionResult<Team>> GetTeamByIdAsync(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult<TeamVm>> GetTeamByIdAsync(string id, CancellationToken cancellationToken)
         {
-            //var team = await _teamService.GetByIdAsync(id);
-            var team = await _mediator.Send(new GetTeamByIdQuery(id));
+            var team = await _mediator.Send(new GetTeamByIdQuery(id), cancellationToken);
 
-            return team != null ? Ok(team) : NotFound();
+            return team != null ? Ok(team) : NoContent();
         }
 
-        [HttpGet("search")]
-        [SwaggerOperation("Find teams by name")]
-        public async Task<IEnumerable<Team>> FindTeamsAsync(string team)
+        [HttpGet("searchByParameters")]
+        [SwaggerOperation("Search teams by parameters or get all teams paginated")]
+        public async Task<PaginatedResponse<TeamVm>> SearchByParametersAsync([FromQuery] TeamSearchModel searchModel, CancellationToken cancellationToken)
         {
-            return await _teamService.SearchByNameAsync(team);
+            return await _mediator.Send(new GetTeamsQuery(searchModel), cancellationToken);
         }
     }
 }

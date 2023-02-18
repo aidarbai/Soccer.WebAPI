@@ -1,35 +1,35 @@
 ﻿using MediatR;
-using Soccer.BLL.MediatR.Queries.Teams;
+using Soccer.BLL.MediatR.Queries.Leagues;
 using Soccer.COMMON.ViewModels;
 using Soccer.DAL.Helpers;
-using Soccer.DAL.Models;
 using Soccer.DAL.Repositories.Interfaces;
 
-namespace Soccer.BLL.MediatR.Handlers.Teams
+namespace Soccer.BLL.MediatR.Handlers.Leagues
 {
-    public class GetTeamsHandler : IRequestHandler<GetTeamsQuery, PaginatedResponse<TeamVm>>
+    public class GetLeaguesHandler : IRequestHandler<GetLeaguesQuery, PaginatedResponse<LeagueVm>>
     {
-        private readonly ITeamRepository _repository;
+        private readonly ILeagueRepository _repository;
         private readonly IMapper _mapper;
-        public GetTeamsHandler(ITeamRepository repository, IMapper mapper)
+
+        public GetLeaguesHandler(ILeagueRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResponse<TeamVm>> Handle(
-            GetTeamsQuery request,
+        public async Task<PaginatedResponse<LeagueVm>> Handle(
+            GetLeaguesQuery request,
             CancellationToken cancellationToken)
         {
-            var filter = TeamFilterBuilder.Build(request.SearchModel);
+            var filter = LeagueFilterBuilder.Build(request.SearchModel);
 
-            long count = await _repository.GetTeamsQueryCountAsync(filter);
+            long count = await _repository.GetLeaguesQueryCountAsync(filter);
 
             int totalPages = (int)Math.Ceiling(decimal.Divide(count, request.SearchModel.PageSize));
 
             if (request.SearchModel.PageNumber > totalPages)
             {
-                return new PaginatedResponse<TeamVm>
+                return new PaginatedResponse<LeagueVm>
                 {
                     PageSize = request.SearchModel.PageSize,
                     PageNumber = request.SearchModel.PageNumber + 1,
@@ -37,15 +37,15 @@ namespace Soccer.BLL.MediatR.Handlers.Teams
                 };
             }
 
-            var teams = await _repository.GetTeamsForPaginatedSearchResultsAsync(request.SearchModel, filter);
+            var leagues = await _repository.GetTeamsForPaginatedSearchResultsAsync(request.SearchModel, filter);
 
-            var result = new PaginatedResponse<TeamVm>
+            var result = new PaginatedResponse<LeagueVm>
             {
                 ItemsCount = count,
                 PageSize = request.SearchModel.PageSize,
                 TotalPages = totalPages,
                 PageNumber = request.SearchModel.PageNumber + 1,
-                Results = _mapper.Map<List<TeamVm>>(teams)
+                Results = _mapper.Map<List<LeagueVm>>(leagues)
             };
 
             return result;

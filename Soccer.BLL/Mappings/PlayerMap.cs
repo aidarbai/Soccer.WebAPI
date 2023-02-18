@@ -9,7 +9,7 @@ namespace Soccer.BLL.Mappings
     {
         public PlayerMap()
         {
-            CreateMap<PlayerVM, Player>().ReverseMap();
+            CreateMap<PlayerVm, Player>().ReverseMap();
 
             CreateMap<ResponsePlayerImportDTO, Player>()
             .ForMember(dest => dest.Id, prop => prop.MapFrom(src => src.Player.Id.ToString()))
