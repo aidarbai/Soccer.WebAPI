@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
-using AutoFixture.Xunit2;
+using Soccer.BLL.Validators;
 using Soccer.COMMON.ViewModels;
+using System.Reflection;
 
 namespace Soccer.Tests.Customizations
 {
@@ -25,4 +26,27 @@ namespace Soccer.Tests.Customizations
         })
         { }
     }
+
+    //public static IEnumerable<object[]> Data =>
+    //    new List<object[]>
+    //    {
+    //        new object[] { new PlayerSearchByParametersModel { TeamId = "1" }, true },
+    //        new object[] { new PlayerSearchByParametersModel { TeamId = "1234567891011" }, false }
+    //    };
+
+    //[Theory]
+    //[AutoDomainData(nameof(Data))]
+    //public void Validator_ValidateCorrectly(CountQuote.Request request, bool expectedValid)
+    //{
+    //    //arrange
+    //    //var sut = new CountQuote.Validator();
+    //    var sut = new PlayerSearchByParametersModelValidator();
+        
+
+    //    //act
+    //    var actualValid = sut.Validate(request).IsValid;
+
+    //    //assert
+    //    actualValid.Should().Be(expectedValid);
+    //}
 }

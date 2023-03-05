@@ -1,0 +1,9 @@
+global using Xunit;
+global using AutoFixture.Xunit2;
+global using AutoMapper;
+global using Moq;
+global using Soccer.BLL.DTOs;
+global using Soccer.BLL.Mappings;
+global using Soccer.BLL.Services;
+global using Soccer.BLL.Services.Interfaces;
+global using Soccer.DAL.Models;

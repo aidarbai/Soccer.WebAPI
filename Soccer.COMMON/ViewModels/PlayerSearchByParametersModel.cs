@@ -23,9 +23,7 @@ namespace Soccer.COMMON.ViewModels
         public Order Order { get; set; }
         public int PageNumber { get; set; }
         
-        public int PageSize { get; set; } = 10;
-
-        //public Pagesize PageSize { get; set; } = Pagesize.P10;
+        public int PageSize { get; set; } = 25;
 
         public override string ToString()
         {

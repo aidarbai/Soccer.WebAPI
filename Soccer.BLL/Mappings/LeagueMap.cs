@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Soccer.BLL.DTOs;
-using Soccer.COMMON.ViewModels;
-using Soccer.DAL.Models;
+﻿using Soccer.COMMON.ViewModels;
 
 namespace Soccer.BLL.Mappings
 {

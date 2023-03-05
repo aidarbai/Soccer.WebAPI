@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Soccer.BLL.MediatR.Commands;
-using Soccer.DAL.Models;
 using Soccer.DAL.Repositories.Interfaces;
 
 namespace Soccer.BLL.MediatR.Handlers.Teams

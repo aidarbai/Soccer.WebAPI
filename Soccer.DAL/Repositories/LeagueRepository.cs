@@ -20,7 +20,7 @@ namespace Soccer.DAL.Repositories
 
         }
 
-        public async Task<List<League>> GetTeamsForPaginatedSearchResultsAsync(LeagueSearchModel model, FilterDefinition<League> filter)
+        public async Task<List<League>> GetLeaguesForPaginatedSearchResultsAsync(LeagueSearchModel model, FilterDefinition<League> filter)
         {
             filter ??= Builders<League>.Filter.Empty;
 

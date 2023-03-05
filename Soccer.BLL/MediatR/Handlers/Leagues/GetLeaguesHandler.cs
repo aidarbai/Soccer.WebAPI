@@ -27,19 +27,24 @@ namespace Soccer.BLL.MediatR.Handlers.Leagues
 
             int totalPages = (int)Math.Ceiling(decimal.Divide(count, request.SearchModel.PageSize));
 
+            PaginatedResponse<LeagueVm> result;
+
             if (request.SearchModel.PageNumber > totalPages)
             {
-                return new PaginatedResponse<LeagueVm>
+                result = new PaginatedResponse<LeagueVm>
                 {
                     PageSize = request.SearchModel.PageSize,
                     PageNumber = request.SearchModel.PageNumber + 1,
                     TotalPages = totalPages,
+                    Results = new List<LeagueVm>()
                 };
+
+                return result;
             }
 
-            var leagues = await _repository.GetTeamsForPaginatedSearchResultsAsync(request.SearchModel, filter);
+            var leagues = await _repository.GetLeaguesForPaginatedSearchResultsAsync(request.SearchModel, filter);
 
-            var result = new PaginatedResponse<LeagueVm>
+            result = new PaginatedResponse<LeagueVm>
             {
                 ItemsCount = count,
                 PageSize = request.SearchModel.PageSize,

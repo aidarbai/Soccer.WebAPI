@@ -1,21 +1,13 @@
-using AutoFixture.Xunit2;
-using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Soccer.BLL.DTOs;
-using Soccer.BLL.Mappings;
-using Soccer.BLL.Services;
-using Soccer.BLL.Services.Interfaces;
-using Soccer.DAL.Models;
+
 using System.Text;
 
-namespace Soccer.Tests
+namespace Soccer.Tests.Services
 {
     public class ImportServiceTests
     {
         private readonly IConfigurationRoot configuration;
-        //private readonly Mock<IMapper> mapper;
         private readonly IMapper mapper;
         private readonly Mock<ILeagueService> leagueService;
         private readonly Mock<ITeamService> teamService;
@@ -39,13 +31,12 @@ namespace Soccer.Tests
 
             configuration = builder.Build();
 
-            //mapper = new();
             mapper = new MapperConfiguration(x => x.AddProfile(new LeagueMap())).CreateMapper();
             leagueService = new();
             teamService = new();
             playerService = new();
             dataDownloader = new();
-            logger= new ();
+            logger = new();
 
 
             sut = new(dataDownloader.Object,
@@ -53,13 +44,12 @@ namespace Soccer.Tests
                       configuration,
                       teamService.Object,
                       playerService.Object,
-                      //mapper.Object,
                       mapper,
                       logger.Object);
         }
 
         [Fact(DisplayName = "ImportLeagueAsync Should Not Start Processing Result From DataDownloader If Its Null")]
-        
+
         public async Task Test1_ImportLeagueAsync()
         {
             //Arange
@@ -71,7 +61,6 @@ namespace Soccer.Tests
 
             //Assert
             dataDownloader.Verify(d => d.GetDataAsync<ResponseImportDTO<ResponseLeagueImportDTO>>(It.IsAny<string>()), Times.Once);
-            //mapper.Verify(m => m.Map<League>(It.IsAny<ResponseLeagueImportDTO>()), Times.Never);
             leagueService.Verify(m => m.CreateAsync(It.IsAny<League>()), Times.Never);
         }
 
@@ -81,14 +70,12 @@ namespace Soccer.Tests
         {
             //Arange
             dataDownloader.Setup(x => x.GetDataAsync<ResponseImportDTO<ResponseLeagueImportDTO>>(It.IsAny<string>())).ReturnsAsync(responseImport);
-            //mapper.Setup(x => x.Map<League>(It.IsAny<ResponseLeagueImportDTO>())).Returns(new League());
 
             //Act
             await sut.ImportLeagueAsync();
 
             //Assert
             dataDownloader.Verify(d => d.GetDataAsync<ResponseImportDTO<ResponseLeagueImportDTO>>(It.IsAny<string>()), Times.Once);
-            //mapper.Verify(m => m.Map<League>(It.IsAny<ResponseLeagueImportDTO>()), Times.Once);
             leagueService.Verify(m => m.CreateAsync(It.IsAny<League>()), Times.Once);
         }
     }

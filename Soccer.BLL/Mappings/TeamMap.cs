@@ -15,7 +15,9 @@ namespace Soccer.BLL.Mappings
             .ForMember(dest => dest.Founded, prop => prop.MapFrom(src => src.Team.Founded))
             .ForMember(dest => dest.Logo, prop => prop.MapFrom(src => src.Team.Logo))
             .ForMember(dest => dest.Venue, prop => prop.MapFrom(src => src.Venue.Name))
-            .ForMember(dest => dest.City, prop => prop.MapFrom(src => src.Venue.City));
+            .ForMember(dest => dest.City, prop => prop.MapFrom(src => src.Venue.City))
+            .ForMember(dest => dest.League, opt => opt.Ignore())
+            .ForMember(dest => dest.CardColor, opt => opt.Ignore());
 
             CreateMap<TeamVm, Team>().ReverseMap();
         }

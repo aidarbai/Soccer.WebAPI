@@ -10,5 +10,6 @@ namespace Soccer.DAL.Models
         public string? Venue { get; set; }
         public string? City { get; set; }
         public string? League { get; set; }
+        public string? CardColor { get; set; }
     }
 }

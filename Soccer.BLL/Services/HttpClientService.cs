@@ -28,7 +28,7 @@ namespace Soccer.BLL.Services
 
             try
             {
-                var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
+                var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage); //TODO mock exception
 
                 if (!httpResponseMessage.IsSuccessStatusCode)
                 {

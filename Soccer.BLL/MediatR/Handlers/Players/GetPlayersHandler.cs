@@ -32,19 +32,25 @@ namespace Soccer.BLL.MediatR.Handlers.Players
 
             int totalPages = (int)Math.Ceiling(decimal.Divide(count, request.SearchModel.PageSize));
 
+            PaginatedResponse<PlayerVm> result;
+
             if (request.SearchModel.PageNumber > totalPages)
             {
-                return new PaginatedResponse<PlayerVm>
+
+                result = new PaginatedResponse<PlayerVm>
                 {
                     PageSize = request.SearchModel.PageSize,
                     PageNumber = request.SearchModel.PageNumber + 1,
                     TotalPages = totalPages,
+                    Results = new List<PlayerVm>()
                 };
+
+                return result;
             }
 
             var players = await _repository.GetPlayersForPaginatedSearchResultAsync(request.SearchModel, filter);
 
-            var result = new PaginatedResponse<PlayerVm>
+            result = new PaginatedResponse<PlayerVm>
             {
                 ItemsCount = count,
                 PageSize = request.SearchModel.PageSize,

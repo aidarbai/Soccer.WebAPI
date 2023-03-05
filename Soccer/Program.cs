@@ -54,12 +54,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<PlayerSearchByParametersModelValidator>();
-//builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
-//builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program).Assembly);
-//ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
-//ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -68,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+        policy.WithOrigins("*").AllowAnyHeader())
 );
 
 var app = builder.Build();
