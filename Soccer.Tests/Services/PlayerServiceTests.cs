@@ -18,8 +18,8 @@ namespace Soccer.Tests.Services
 
             mapper = new MapperConfiguration(x =>
             {
-                x.AddProfile(new PlayerMap());
-                x.AddProfile(new StatisticMap());
+                x.AddProfile(new PlayerProfile());
+                x.AddProfile(new StatisticProfile());
             }).CreateMapper();
 
             sut = new PlayerService(repository.Object, mapper);

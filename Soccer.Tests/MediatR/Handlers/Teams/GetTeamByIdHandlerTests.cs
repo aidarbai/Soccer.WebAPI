@@ -15,7 +15,7 @@ namespace Soccer.Tests.MediatR.Handlers.Teams
         {
             repository = new();
 
-            mapper = new MapperConfiguration(x =>x.AddProfile(new TeamMap())).CreateMapper();
+            mapper = new MapperConfiguration(x =>x.AddProfile(new TeamProfile())).CreateMapper();
 
             sut = new GetTeamByIdHandler(repository.Object, mapper);
         }

@@ -20,8 +20,8 @@ namespace Soccer.Tests.MediatR.Handlers.Players
 
             mapper = new MapperConfiguration(x =>
             {
-                x.AddProfile(new PlayerMap());
-                x.AddProfile(new StatisticMap());
+                x.AddProfile(new PlayerProfile());
+                x.AddProfile(new StatisticProfile());
             }).CreateMapper();
 
             sut = new GetPlayersHandler(repository.Object, mapper);

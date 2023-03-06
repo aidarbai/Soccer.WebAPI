@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Soccer.COMMON.Constants;
-using Microsoft.Extensions.Logging;
 using Soccer.BLL.Helpers;
-using Soccer.BLL.Services.Interfaces;
 
 namespace Soccer.BLL.Services
 {
@@ -28,7 +25,7 @@ namespace Soccer.BLL.Services
 
             try
             {
-                var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage); //TODO mock exception
+                var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
 
                 if (!httpResponseMessage.IsSuccessStatusCode)
                 {

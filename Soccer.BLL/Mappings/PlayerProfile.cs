@@ -5,9 +5,9 @@ using Soccer.DAL.Models;
 
 namespace Soccer.BLL.Mappings
 {
-    public class PlayerMap : Profile
+    public class PlayerProfile : Profile
     {
-        public PlayerMap()
+        public PlayerProfile()
         {
             CreateMap<PlayerVm, Player>().ReverseMap();
 

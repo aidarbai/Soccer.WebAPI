@@ -5,9 +5,9 @@ using Soccer.DAL.Models;
 
 namespace Soccer.BLL.Mappings
 {
-    public class StatisticMap : Profile
+    public class StatisticProfile : Profile
     {
-        public StatisticMap()
+        public StatisticProfile()
         {
             CreateMap<StatisticImportDTO, Statistic>()
             .ForMember(

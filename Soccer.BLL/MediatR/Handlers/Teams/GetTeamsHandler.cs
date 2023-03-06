@@ -29,7 +29,6 @@ namespace Soccer.BLL.MediatR.Handlers.Teams
 
             PaginatedResponse<TeamVm> result;
 
-
             if (request.SearchModel.PageNumber > totalPages)
             {
                 result = new PaginatedResponse<TeamVm>

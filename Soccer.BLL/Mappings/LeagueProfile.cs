@@ -2,9 +2,9 @@
 
 namespace Soccer.BLL.Mappings
 {
-    public class LeagueMap : Profile
+    public class LeagueProfile : Profile
     {
-        public LeagueMap()
+        public LeagueProfile()
         {
             CreateMap<ResponseLeagueImportDTO, League>()
             .ForMember(dest => dest.Id, prop => prop.MapFrom(src => src.League.Id.ToString()))

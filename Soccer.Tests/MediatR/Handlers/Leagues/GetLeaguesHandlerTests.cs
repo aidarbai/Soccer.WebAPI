@@ -18,7 +18,7 @@ namespace Soccer.Tests.MediatR.Handlers.Leagues
         {
             repository = new();
 
-            mapper = new MapperConfiguration(x =>x.AddProfile(new LeagueMap())).CreateMapper();
+            mapper = new MapperConfiguration(x =>x.AddProfile(new LeagueProfile())).CreateMapper();
 
             sut = new GetLeaguesHandler(repository.Object, mapper);
         }

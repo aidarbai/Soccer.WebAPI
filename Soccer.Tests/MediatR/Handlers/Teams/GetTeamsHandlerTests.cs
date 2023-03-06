@@ -18,7 +18,7 @@ namespace Soccer.Tests.MediatR.Handlers.Teams
         {
             repository = new();
 
-            mapper = new MapperConfiguration(x =>x.AddProfile(new TeamMap())).CreateMapper();
+            mapper = new MapperConfiguration(x =>x.AddProfile(new TeamProfile())).CreateMapper();
 
             sut = new GetTeamsHandler(repository.Object, mapper);
         }
@@ -53,7 +53,7 @@ namespace Soccer.Tests.MediatR.Handlers.Teams
 
             repository.Setup(r => r.GetTeamsQueryCountAsync(It.IsAny<FilterDefinition<Team>>()))
                 .ReturnsAsync(teamsList.Count);
-            repository.Setup(r => r.GetTeamsForPaginatedSearchResultsAsync(It.IsAny<TeamSearchModel>(), It.IsAny<FilterDefinition<Team>>()))
+            repository.Setup(r => r.GetTeamsForPaginatedSearchResultsAsync(It.Is<TeamSearchModel>(x => x.PageSize == 10), It.IsAny<FilterDefinition<Team>>()))
                 .ReturnsAsync(teamsList);
 
             //Act

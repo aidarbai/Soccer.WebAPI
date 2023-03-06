@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
 using System.Text;
 
 namespace Soccer.Tests.Services
@@ -31,7 +30,7 @@ namespace Soccer.Tests.Services
 
             configuration = builder.Build();
 
-            mapper = new MapperConfiguration(x => x.AddProfile(new LeagueMap())).CreateMapper();
+            mapper = new MapperConfiguration(x => x.AddProfile(new LeagueProfile())).CreateMapper();
             leagueService = new();
             teamService = new();
             playerService = new();

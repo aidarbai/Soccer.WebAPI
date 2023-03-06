@@ -5,9 +5,9 @@ using Soccer.DAL.Models;
 
 namespace Soccer.BLL.Mappings
 {
-    public class TeamMap : Profile
+    public class TeamProfile : Profile
     {
-        public TeamMap()
+        public TeamProfile()
         {
             CreateMap<ResponseTeamImportDTO, Team>()
             .ForMember(dest => dest.Id, prop => prop.MapFrom(src => src.Team.Id.ToString()))
